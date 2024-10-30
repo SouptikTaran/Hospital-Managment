@@ -13,12 +13,15 @@ dotenv.config({ path: __dirname+'/.env'});
 const PORT = 5000
 const app = express()
 
+//To render Data
+app.use(express.json())
+
 // import Routes
 import routes from './routes/index.route'
 
 
 //Routes
-app.use('/', routes)
+app.use('/api', routes)
 
 //server listening
 const startServer = async () => {

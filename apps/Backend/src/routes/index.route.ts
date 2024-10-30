@@ -1,8 +1,10 @@
 import { Router } from "express";
-import { demo } from "../controller/user.controller";
+import patientRouter from "./patient.route.ts"
+import doctorRouter from "./doctor.route.ts"
 const router = Router()
 
 
-router.get('/' , demo)
+router.use('/patient' , patientRouter)
+router.use('/doctor' , doctorRouter)
 
 export default router
