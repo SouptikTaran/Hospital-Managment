@@ -23,7 +23,7 @@ const MidSec = () => {
            
 
            {/* Appointment section */}
-            <Card className='shadow-md shadow-slate-400'>
+            <Card className='shadow-md shadow-slate-400  bg-white p-5 rounded-xl '>
                 <CardHeader>
                     <CardTitle className="flex gap-5 items-center" >
                         <Calendar color="#007bff" strokeWidth={1.5}/>
@@ -54,7 +54,7 @@ const MidSec = () => {
                 <CardFooter>
                 </CardFooter>
             </Card>
-            <Card className=' mb-10 shadow-md shadow-slate-400'>
+            <Card className=' mb-10 shadow-md shadow-slate-400  bg-white p-5 rounded-xl '>
                 <CardHeader>
                     <CardTitle className="flex gap-5 items-center" >
                         <Activity color="#007bff" strokeWidth={1.5}/>

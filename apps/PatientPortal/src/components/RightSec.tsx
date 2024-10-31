@@ -14,7 +14,7 @@ const RightSec = () => {
   return (
     <div className="w-full md:w-[25%] border gap-5 flex flex-col overflow-hidden md:h-[83.2vh]">
         <div className="w-full gap-5 flex flex-col overflow-scroll scrollbar-thin">
-                <Card className="shadow-md shadow-slate-400">
+                <Card className="shadow-md shadow-slate-400  bg-white p-5 rounded-xl ">
                     <CardHeader >
                         <CardTitle className="flex gap-5 items-center" >
                         <MessageCircle color="#007bff" strokeWidth={1.5}/>
@@ -31,7 +31,7 @@ const RightSec = () => {
                 
                 
              {/*MEDICAL RECORDS  */}
-            <Card  className="shadow-md shadow-slate-400">
+            <Card  className="shadow-md shadow-slate-400 mb-10 gap-3 bg-white p-5 rounded-xl flex flex-col ">
                 <CardHeader>
                     <CardTitle className="flex gap-5 items-center" >
                         <FileText color="#007bff" strokeWidth={1.5}/>
@@ -60,8 +60,8 @@ const RightSec = () => {
                 </CardFooter>
             </Card >
                    {/* Prescription */} 
-            <Card  className="shadow-md shadow-slate-400 mb-10">
-                <CardHeader>
+            <Card  className="shadow-md shadow-slate-400 mb-10 gap-3 bg-white p-5 rounded-xl flex flex-col">
+                <CardHeader >
                     <CardTitle className="flex gap-5 items-center" >
                         <Heart color="#007bff" strokeWidth={1.5}/>
                        <span className="text-lg font-semibold">Prescriptions</span>
