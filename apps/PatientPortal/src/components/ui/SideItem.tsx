@@ -2,10 +2,11 @@ import React,{ReactNode} from 'react'
 interface Props {
     children?: ReactNode;
     color?:string;
+    
 }
 const SideItem = ({children,color}:Props) => {
   return (
-    <div className={`h-[2.3rem]  rounded-sm px-2 py-1 w-[90%] gap-5 flex items-center justify-center  active:bg-[#007bff] cursor-pointer hover:bg-[#007bff] hover:bg-opacity-10 text-[${color}]`} color={color}>{children}</div>
+    <div className={`h-[2.3rem] text-sm rounded-sm px-2 py-1 w-[90%] gap-5 flex items-center justify-center  active:bg-[#007bff] cursor-pointer hover:bg-[#007bff] hover:bg-opacity-10 text-[${color}]`} color={color}>{children}</div>
   )
 }
 

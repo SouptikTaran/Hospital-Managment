@@ -13,7 +13,7 @@ import { Button} from "@repo/ui/components/ui/button"
 const MidSec = () => {
   return (
     <> 
-        <div className='flex flex-col md:w-[70%] w-full mb-5 gap-5 md:overflow-hidden md:h-[82vh] '>
+        <div className='flex flex-col md:w-[70%] w-full mb-1 gap-5 md:overflow-hidden md:h-[82vh] '>
           <div className='overflow-scroll flex flex-col md:w-[100%] gap-5 w-full scrollbar-thin'>
             <div className='flex flex-wrap gap-5 md:gap-0 w-[100%]  p-1 justify-between  py-4'>
               <QuickInfoCard icons={<Clock color='#007bff' className=' h-8 w-8 md:h-6' strokeWidth={1.5} />} title='Next Appointment' content='Mar 15,10:00 AM'/>
@@ -23,7 +23,7 @@ const MidSec = () => {
            
 
            {/* Appointment section */}
-            <Card>
+            <Card className='shadow-md shadow-slate-400'>
                 <CardHeader>
                     <CardTitle className="flex gap-5 items-center" >
                         <Calendar color="#007bff" strokeWidth={1.5}/>
@@ -32,31 +32,29 @@ const MidSec = () => {
             
                 </CardHeader>
                 <CardContent className="flex flex-col gap-5 text-[#46505f] h-[15rem] md:h-[10rem] pb-10">
-                    <div className='flex justify-between  items-center p-2 hover:bg-gray-100 rounded-lg '>
-                        <div className='flex flex-col gap-4 md:gap-0'>
+                    <div className='flex justify-between  items-center px-4 py-2 hover:bg-gray-100 rounded-lg'>
+                        <div className='flex flex-col gap-2 md:gap-0'>
                           <h1 className='text-md font-bold'>Dr. Emily Chen</h1>
                           <p className='text-xs'>2024-03-15 at 10:00 AM</p>
                         </div>
-                        <div className='flex w-[30%] gap-2 flex-col md:flex-row justify-evenly border-black'>
-                            <Button className='bg-[#f9fbff] text-black border md:w-[40%] border-gray-100'>Reschedule</Button>
-                            {/* <Button className='md:w-[40%]  bg-white text-red-500  border'>Cancel</Button> */}
-                        </div>
+                       
+                        <Button className='bg-[#194778] text-white w-[40%] md:w-[15%] border-gray-100'>Reschedule</Button>
+                      
                     </div>
-                    <div className='flex justify-between  items-center p-2 hover:bg-gray-100  rounded-lg '>
-                        <div className='flex flex-col gap-4 md:gap-0'>
+                    <div className='flex justify-between  items-center px-4 py-2 hover:bg-gray-100 rounded-lg '>
+                        <div className='flex flex-col gap-2 md:gap-0'>
                           <h1 className='text-md font-bold'>Dr. Emily Chen</h1>
                           <p className='text-xs'>2024-03-15 at 10:00 AM</p>
                         </div>
-                        <div className='flex w-[30%] gap-2 flex-col md:flex-row justify-evenly border-black'>
-                            <Button className='bg-[#f9fbff] text-black border md:w-[40%] border-gray-100'>Reschedule</Button>
-                            {/* <Button className='md:w-[40%] bg-white text-red-500  border'>Cancel</Button> */}
-                        </div>
+                       
+                        <Button className='bg-[#194778] text-white  w-[40%] md:w-[15%] border-gray-100'>Reschedule</Button>
+                      
                     </div>
                 </CardContent>
                 <CardFooter>
                 </CardFooter>
             </Card>
-            <Card className=' mb-10'>
+            <Card className=' mb-10 shadow-md shadow-slate-400'>
                 <CardHeader>
                     <CardTitle className="flex gap-5 items-center" >
                         <Activity color="#007bff" strokeWidth={1.5}/>

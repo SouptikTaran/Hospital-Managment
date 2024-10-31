@@ -12,13 +12,13 @@ import { Link } from "react-router-dom"
   
 const RightSec = () => {
   return (
-    <div className="w-full md:w-[25%] border gap-5 flex flex-col overflow-hidden md:h-[84.8vh]">
+    <div className="w-full md:w-[25%] border gap-5 flex flex-col overflow-hidden md:h-[83.2vh]">
         <div className="w-full gap-5 flex flex-col overflow-scroll scrollbar-thin">
-                <Card>
-                    <CardHeader>
+                <Card className="shadow-md shadow-slate-400">
+                    <CardHeader >
                         <CardTitle className="flex gap-5 items-center" >
                         <MessageCircle color="#007bff" strokeWidth={1.5}/>
-                          <span className="text-xl font-semibold">Messages & Notification</span>
+                          <span className="text-[1.06rem] font-semibold">Messages & Notification</span>
                         </CardTitle>
                 
                     </CardHeader>
@@ -31,11 +31,11 @@ const RightSec = () => {
                 
                 
              {/*MEDICAL RECORDS  */}
-            <Card>
+            <Card  className="shadow-md shadow-slate-400">
                 <CardHeader>
                     <CardTitle className="flex gap-5 items-center" >
                         <FileText color="#007bff" strokeWidth={1.5}/>
-                       <span className="text-xl font-semibold"> Medical Records</span>
+                       <span className="text-lg font-semibold"> Medical Records</span>
                     </CardTitle>
                 
                 </CardHeader>
@@ -58,27 +58,29 @@ const RightSec = () => {
                 <CardFooter>
                     <Link to='/'  className="w-full"><Button className="w-full border-[#007bff]  border bg-white hover:bg-white hover:shadow-lg text-[#007bff] bg-opacity-90">View All Reports</Button></Link>
                 </CardFooter>
-            </Card>
+            </Card >
                    {/* Prescription */} 
-            <Card className="mb-10">
+            <Card  className="shadow-md shadow-slate-400 mb-10">
                 <CardHeader>
                     <CardTitle className="flex gap-5 items-center" >
                         <Heart color="#007bff" strokeWidth={1.5}/>
-                       <span className="text-xl font-semibold">Prescriptions</span>
+                       <span className="text-lg font-semibold">Prescriptions</span>
                     </CardTitle>
                 
                 </CardHeader>
                 <CardContent className="flex flex-col gap-5 text-[#46505f]">
                     <div className="flex items-center justify-between">
                         Metaformin
-                        <div className="flex">
-                            <Button>Set Reminder</Button>
+                        <div className="flex justify-between w-[22%]">
+                            <Download size={15}/>
+                            <Share2 size={15}/>
                         </div>
                     </div>
                     <div className="flex items-center justify-between">
                         Lisinopril
-                        <div className="flex">
-                            <Button>Set Reminder</Button>
+                        <div className="flex justify-between w-[22%]">
+                            <Download size={15}/>
+                            <Share2 size={15}/>
                         </div>
                     </div>
                 </CardContent>
