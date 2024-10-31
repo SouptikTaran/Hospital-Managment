@@ -53,7 +53,13 @@ export default {
   				'4': 'hsl(var(--chart-4))',
   				'5': 'hsl(var(--chart-5))'
   			}
-  		}
+  		},
+		backgroundImage:{
+			'login':"url('/src/assets/images/download.jpeg')"
+		},
+		fontFamily:{
+			'raleway':['"Raleway"','sans-serif']
+		}
   	}
   },
   plugins: [require("tailwindcss-animate")],
