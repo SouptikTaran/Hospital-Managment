@@ -5,7 +5,7 @@ import {
     CardFooter,
     CardHeader,
     CardTitle,
-  } from "@/components/ui/card"
+  } from "@repo/ui/components/ui/card"
 import { Button} from "@repo/ui/components/ui/button"
 import { FileText,Download,Share2,Heart, Calendar, MessageCircle} from "lucide-react"
 import { Link } from "react-router-dom"

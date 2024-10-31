@@ -6,7 +6,7 @@ import {
     CardFooter,
     CardHeader,
     CardTitle,
-  } from "@/components/ui/card"
+  } from "@repo/ui/components/ui/card"
 import { Button } from '@repo/ui/components/ui/button'
 import { useState } from 'react'
   
