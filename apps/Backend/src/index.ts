@@ -2,6 +2,7 @@
 import express from 'express'
 import dotenv from 'dotenv'
 import { connectDB } from './configs/database.config'
+import cors from 'cors'
 
 
 
@@ -15,6 +16,12 @@ const app = express()
 
 //To render Data
 app.use(express.json())
+
+//cors
+app.use(cors({
+    origin :'http://localhost:8002',
+    credentials: true 
+}))
 
 // import Routes
 import routes from './routes/index.route'

@@ -1,8 +1,21 @@
 import SideItem from "./ui/SideItem"
 import { Bell, FileText, LayoutDashboard, LogOut, User } from 'lucide-react';
 import { Calendar } from 'lucide-react';
- 
+import { AppDispatch } from "@/redux/appStore";
+import { removeUser } from "@/redux/userSlice";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+
+
 export const LeftSection = () => {
+
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate()
+  const handleLogout = async () => {
+      dispatch(removeUser());
+      navigate('/login')
+  };
+
   return (
     <>
       <div className="md:flex flex-col items-center hidden justify-start gap-4 w-[20%]  bg-[#f9fbff] border-r-2 pt-4 border-r-slate-300  h-[100vh]">
@@ -38,9 +51,9 @@ export const LeftSection = () => {
               </div>
               <span className="w-[60%]">Profile</span>
             </SideItem>
-            <SideItem color="#46505f">
+            <SideItem color="#46505f" onClick={handleLogout}>
               <div className="w-[20%]">
-                <LogOut size={20}/>
+                <LogOut size={20} />
               </div>
               <span className="w-[60%]">Logout</span>
             </SideItem>

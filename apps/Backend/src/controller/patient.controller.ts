@@ -5,10 +5,12 @@ import { signupSchema, loginSchema, deletePatientSchema } from "../schemas/patie
 import { Patient } from "../models/patient.model.ts";
 
 
+
 const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret'
 
 // Signup Controller
 export const signup: RequestHandler = async (req, res) => {
+    console.log(req.body)
     const { firstName, lastName, email, gender, password } = req.body
     const validation = signupSchema.safeParse(req.body)
     if (!validation.success)
@@ -35,10 +37,25 @@ export const signup: RequestHandler = async (req, res) => {
             password: hashedPassword
         })
 
+        const token = jwt.sign(
+            { id: patient.id, email: patient.email },
+            JWT_SECRET,
+            {
+                expiresIn: '1h',
+            }
+        )
+
+        res.cookie('token' , token,{
+            httpOnly: true,
+            secure: true,
+            sameSite : 'strict',
+            maxAge: 24 * 60 * 60 * 1000, // Set expiration to 1 day (in ms)
+        })
+
         const { password: _, ...safePatient } = patient.toObject();
 
 
-        res.status(201).json({ message: 'Patient created successfully', user: safePatient })
+        res.status(201).json({ message: 'Patient created successfully', user: safePatient})
     } catch (error: any) {
         res
             .status(500)
@@ -76,9 +93,15 @@ export const login: RequestHandler = async (req, res) => {
                 expiresIn: '1h',
             }
         )
+
+        res.cookie('token' , token,{
+            secure: true,
+            // sameSite : 'strict',
+            maxAge: 24 * 60 * 60 * 1000, // Set expiration to 1 day (in ms)
+        })
         const { password: _, ...safePatient } = patient.toObject();
 
-        res.status(200).json({ message: 'Login successful', token, user: safePatient })
+        res.status(200).json({ message: 'Login successful',  user: safePatient })
     } catch (error: any) {
         res.status(500).json({ message: 'Error logging in', error: error.message })
     }
