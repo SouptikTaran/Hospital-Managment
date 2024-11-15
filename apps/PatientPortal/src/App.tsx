@@ -3,6 +3,8 @@ import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 import { tokenLoader, checkToken , restrict , logoutFunc } from "./lib/Auth";
 import NotFound from "./pages/NotFound";
+import path from "path";
+import Booking from "./pages/Booking";
 
 
 // export default function App() {
@@ -42,6 +44,11 @@ function App() {
           path: "/",
           loader: checkToken,
           element: <Dashboard />
+        },
+        {
+          path: "/booking",
+          loader: checkToken,
+          element: <Booking />
         },
         {
           path :"logout",
