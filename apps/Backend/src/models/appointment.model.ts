@@ -10,6 +10,14 @@ const appointmentSchema = new mongoose.Schema({
         ref: "Doctor",
         required: true
     },
+    startTime: {
+        type: Date,
+        required: true
+    },
+    endTime: {
+        type: Date,
+        required: true
+    },
     patientId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Patient",
@@ -23,6 +31,16 @@ const appointmentSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     }
+});
+
+
+appointmentSchema.pre('save', async function (next) {
+    const doctor = await mongoose.model('Doctor').findById(this.doctorId);
+    const patient = await mongoose.model('Patient').findById(this.patientId);
+    if (!doctor || !patient) {
+        return next(new Error("Invalid doctorId or patientId"));
+    }
+    next();
 });
 
 export const Appointment = mongoose.model("Appointment", appointmentSchema);

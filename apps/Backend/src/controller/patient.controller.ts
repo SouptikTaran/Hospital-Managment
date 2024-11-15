@@ -1,8 +1,11 @@
 import { RequestHandler } from "../types/types";
-import bcrypt from 'bcrypt'
+import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import { signupSchema, loginSchema, deletePatientSchema } from "../schemas/patient.schema.ts";
 import { Patient } from "../models/patient.model.ts";
+import { Doctor } from "../models/doctor.model.ts";
+import { Appointment } from "../models/appointment.model.ts";
+import mongoose from "mongoose";
 
 
 
@@ -45,17 +48,15 @@ export const signup: RequestHandler = async (req, res) => {
             }
         )
 
-        res.cookie('token' , token,{
-            httpOnly: true,
+        res.cookie('token', token, {
             secure: true,
-            sameSite : 'strict',
             maxAge: 24 * 60 * 60 * 1000, // Set expiration to 1 day (in ms)
         })
 
         const { password: _, ...safePatient } = patient.toObject();
 
 
-        res.status(201).json({ message: 'Patient created successfully', user: safePatient})
+        res.status(201).json({ message: 'Patient created successfully', user: safePatient })
     } catch (error: any) {
         res
             .status(500)
@@ -94,14 +95,13 @@ export const login: RequestHandler = async (req, res) => {
             }
         )
 
-        res.cookie('token' , token,{
+        res.cookie('token', token, {
             secure: true,
-            // sameSite : 'strict',
             maxAge: 24 * 60 * 60 * 1000, // Set expiration to 1 day (in ms)
         })
         const { password: _, ...safePatient } = patient.toObject();
 
-        res.status(200).json({ message: 'Login successful',  user: safePatient })
+        res.status(200).json({ message: 'Login successful', user: safePatient })
     } catch (error: any) {
         res.status(500).json({ message: 'Error logging in', error: error.message })
     }
@@ -135,5 +135,98 @@ export const deletePatient: RequestHandler = async (req, res) => {
         res
             .status(500)
             .json({ message: 'Error deleting patient', error: error.message })
+    }
+}
+
+// Patient Create Appointment
+export const createAppointment: RequestHandler = async (req, res) => {
+    const { patientId } = req.query;
+    const { doctorId, startTime, endTime, date } = req.body;
+
+    // // Ensure patientId is a valid ObjectId
+    // if (!patientId || !mongoose.Types.ObjectId.isValid(patientId as string)) {
+    //     return res.status(400).json({ error: "Invalid or missing patientId" });
+    // }
+
+    try {
+        // Validate if the patient exists
+        const patient = await Patient.findById(patientId);
+        if (!patient) return res.status(404).json({ error: "Patient not found" });
+
+        // Validate if the doctor exists
+        const doctor = await Doctor.findById(doctorId);
+        if (!doctor) return res.status(404).json({ error: "Doctor not found" });
+
+        // Check if the patient is already added to the doctor's patients list
+        if (!doctor.patients.includes(patient.id)) {
+            doctor.patients.push(patient.id);
+        }
+
+
+        // Check for an existing appointment in the requested time slot
+        const existingAppointment = await Appointment.findOne({
+            doctorId,
+            $or: [
+                { startTime: { $lt: endTime }, endTime: { $gt: startTime } },
+                { startTime: { $lt: endTime }, endTime: { $gt: startTime } }
+            ]
+        });
+
+        if (existingAppointment) {
+            return res.status(400).json({ error: "Appointment already exists for this patient with this doctor on the selected date" });
+        }
+
+        // Create the new appointment
+        const appointment = await Appointment.create({
+            patientId,
+            doctorId,
+            startTime,
+            endTime,
+            date: startTime,
+        });
+
+
+        // Push the appointment ID to both doctor and patient's appointment lists
+        doctor.appointments.push(appointment._id);
+        patient.appointments.push(appointment._id);
+
+        // Save the updated doctor and patient documents
+        await doctor.save();
+        await patient.save();
+
+        // Respond with the success message and appointment details
+        res.status(201).json({
+            message: "Appointment created successfully",
+            appointment,
+        });
+
+    } catch (error: any) {
+        res.status(500).json({ error: error.message }); // Catch any errors
+    }
+};
+
+
+// Fetch all appointments
+export const allAppointments: RequestHandler = async (req, res) => {
+    const { patientId } = req.body
+
+    try {
+        //check patient exists 
+        const patient = await Patient.findById(patientId)
+            .populate({
+                path: "appointments",
+                populate: {
+                    path: "doctorId",
+                    select: "firstName lastName specialization", // Populate doctor details
+                },
+            });
+        if (!patient) return res.status(404).json({ error: "Patient not found" });
+
+        res.status(200).json({
+            message: "Appointments fetched successfully",
+            appointments: patient.appointments,
+        });
+    } catch (error) {
+        return res.json({ error: error });
     }
 }

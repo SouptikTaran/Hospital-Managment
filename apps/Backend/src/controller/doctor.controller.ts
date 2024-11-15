@@ -1,6 +1,6 @@
 
 import { RequestHandler } from '../types/types.ts'
-import bcrypt from 'bcrypt'
+import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import {
     loginSchema,
@@ -116,3 +116,18 @@ export const deleteDoctor: RequestHandler = async (req, res) => {
             .json({ message: 'Error deleting Doctor', error: error.message })
     }
 }
+
+
+// TODO : all appointments 
+// Appointment all 
+
+// TODO : appointments by id
+// Appointment by id
+
+// TODO: appointments by doctor
+// doctor's appointment
+
+// TODO: appointment delete
+// Delete appointment
+
+

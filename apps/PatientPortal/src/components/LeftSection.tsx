@@ -5,6 +5,7 @@ import { AppDispatch } from "@/redux/appStore";
 import { removeUser } from "@/redux/userSlice";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { logoutFunc } from "@/lib/Auth";
 
 
 export const LeftSection = () => {
@@ -13,7 +14,8 @@ export const LeftSection = () => {
   const navigate = useNavigate()
   const handleLogout = async () => {
       dispatch(removeUser());
-      navigate('/login')
+     logoutFunc()
+      // navigate('/login')
   };
 
   return (

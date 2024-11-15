@@ -3,7 +3,6 @@ import Cookies from 'js-cookie';
 
 export function tokenLoader() {
     const token = Cookies.get('token');
-    // const token = localStorage.getItem('token');
     console.log("Token check : " , token)
     if (!token) return null;
 
@@ -22,13 +21,13 @@ export function checkToken() {
 
 export function restrict(){
     const token = tokenLoader() 
-    console.log("Token restrict func : " , tokenLoader())
     if(token) return redirect('/')
     return null ;
 }
 
 
 export function logoutFunc(){
+    console.log("logout")
     Cookies.remove('token')
     return redirect('/login')
 }
