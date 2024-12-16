@@ -142,70 +142,63 @@ export const deletePatient: RequestHandler = async (req, res) => {
 // Patient Create Appointment
 export const createAppointment: RequestHandler = async (req, res) => {
     const { name, email , phone ,appointmentType , timeSlot ,doctorId, startTime, endTime, date } = req.body;
+    const patientId = req.user?.userId;
 
-    // console.log(req.headers.cookie)
-    // const cookies = req?.headers?.cookie || "";
-    // const token = getCookie(cookies , "token");
-    // console.log(token);
-    // res.json("Successfully")
-    console.log(req.user);
+    try {
+        // Validate if the patient exists
+        const patient = await Patient.findById(patientId);
+        if (!patient) return res.status(404).json({ error: "Patient not found" });
 
+        // Validate if the doctor exists
+        const doctor = await Doctor.findById(doctorId);
+        if (!doctor) return res.status(404).json({ error: "Doctor not found" });
 
-    // try {
-    //     // Validate if the patient exists
-    //     const patient = await Patient.find({email});
-    //     if (!patient) return res.status(404).json({ error: "Patient not found" });
-
-    //     // Validate if the doctor exists
-    //     const doctor = await Doctor.findById(doctorId);
-    //     if (!doctor) return res.status(404).json({ error: "Doctor not found" });
-
-    //     // Check if the patient is already added to the doctor's patients list
-    //     if (!doctor.patients.includes(patient.id)) {
-    //         doctor.patients.push(patient.id);
-    //     }
+        // Check if the patient is already added to the doctor's patients list
+        if (!doctor.patients.includes(patient.id)) {
+            doctor.patients.push(patient.id);
+        }
 
 
-    //     // Check for an existing appointment in the requested time slot
-    //     const existingAppointment = await Appointment.findOne({
-    //         doctorId,
-    //         $or: [
-    //             { startTime: { $lt: endTime }, endTime: { $gt: startTime } },
-    //             { startTime: { $lt: endTime }, endTime: { $gt: startTime } }
-    //         ]
-    //     });
+        // Check for an existing appointment in the requested time slot
+        const existingAppointment = await Appointment.findOne({
+            doctorId,
+            $or: [
+                { startTime: { $lt: endTime }, endTime: { $gt: startTime } },
+                { startTime: { $lt: endTime }, endTime: { $gt: startTime } }
+            ]
+        });
 
-    //     if (existingAppointment) {
-    //         return res.status(400).json({ error: "Appointment already exists for this patient with this doctor on the selected date" });
-    //     }
+        if (existingAppointment) {
+            return res.status(400).json({ error: "Appointment already exists for this patient with this doctor on the selected date" });
+        }
 
-    //     // Create the new appointment
-    //     const appointment = await Appointment.create({
-    //         patientId,
-    //         doctorId,
-    //         startTime,
-    //         endTime,
-    //         date: startTime,
-    //     });
+        // Create the new appointment
+        const appointment = await Appointment.create({
+            patientId,
+            doctorId,
+            startTime,
+            endTime,
+            date: startTime,
+        });
 
 
-    //     // Push the appointment ID to both doctor and patient's appointment lists
-    //     doctor.appointments.push(appointment._id);
-    //     patient.appointments.push(appointment._id);
+        // Push the appointment ID to both doctor and patient's appointment lists
+        doctor.appointments.push(appointment._id);
+        patient.appointments.push(appointment._id);
 
-    //     // Save the updated doctor and patient documents
-    //     await doctor.save();
-    //     await patient.save();
+        // Save the updated doctor and patient documents
+        await doctor.save();
+        await patient.save();
 
-    //     // Respond with the success message and appointment details
-    //     res.status(201).json({
-    //         message: "Appointment created successfully",
-    //         appointment,
-    //     });
+        // Respond with the success message and appointment details
+        res.status(201).json({
+            message: "Appointment created successfully",
+            appointment,
+        });
 
-    // } catch (error: any) {
-    //     res.status(500).json({ error: error.message }); // Catch any errors
-    // }
+    } catch (error: any) {
+        res.status(500).json({ error: error.message }); // Catch any errors
+    }
 };
 
 // Fetch all appointments
