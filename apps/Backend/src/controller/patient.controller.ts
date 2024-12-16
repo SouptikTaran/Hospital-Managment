@@ -141,8 +141,10 @@ export const deletePatient: RequestHandler = async (req, res) => {
 
 // Patient Create Appointment
 export const createAppointment: RequestHandler = async (req, res) => {
-    const { name, email , phone ,appointmentType , timeSlot ,doctorId, startTime, endTime, date } = req.body;
+    const { name, email , phone ,appointmentType , timeSlot ,doctorId, date } = req.body
     const patientId = req.user?.userId;
+    console.log("req.user : " , req.user) // 
+    console.log("patientId : " , patientId);
 
     try {
         // Validate if the patient exists
@@ -160,40 +162,40 @@ export const createAppointment: RequestHandler = async (req, res) => {
 
 
         // Check for an existing appointment in the requested time slot
-        const existingAppointment = await Appointment.findOne({
-            doctorId,
-            $or: [
-                { startTime: { $lt: endTime }, endTime: { $gt: startTime } },
-                { startTime: { $lt: endTime }, endTime: { $gt: startTime } }
-            ]
-        });
+        // const existingAppointment = await Appointment.findOne({
+        //     doctorId,
+        //     $or: [
+        //         { startTime: { $lt: endTime }, endTime: { $gt: startTime } },
+        //         { startTime: { $lt: endTime }, endTime: { $gt: startTime } }
+        //     ]
+        // });
 
-        if (existingAppointment) {
-            return res.status(400).json({ error: "Appointment already exists for this patient with this doctor on the selected date" });
-        }
+        // if (existingAppointment) {
+        //     return res.status(400).json({ error: "Appointment already exists for this patient with this doctor on the selected date" });
+        // }
 
-        // Create the new appointment
-        const appointment = await Appointment.create({
-            patientId,
-            doctorId,
-            startTime,
-            endTime,
-            date: startTime,
-        });
+        // // Create the new appointment
+        // const appointment = await Appointment.create({
+        //     patientId,
+        //     doctorId,
+        //     startTime,
+        //     endTime,
+        //     date: startTime,
+        // });
 
 
         // Push the appointment ID to both doctor and patient's appointment lists
-        doctor.appointments.push(appointment._id);
-        patient.appointments.push(appointment._id);
+        // doctor.appointments.push(appointment._id);
+        // patient.appointments.push(appointment._id);
 
-        // Save the updated doctor and patient documents
-        await doctor.save();
-        await patient.save();
+        // // Save the updated doctor and patient documents
+        // await doctor.save();
+        // await patient.save();
 
         // Respond with the success message and appointment details
         res.status(201).json({
             message: "Appointment created successfully",
-            appointment,
+            // appointment,
         });
 
     } catch (error: any) {

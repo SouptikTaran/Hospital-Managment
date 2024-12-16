@@ -5,7 +5,7 @@ const router = Router()
 import { verifyCookie } from "../middlewares/example.middleware.ts";
 
 
-router.use('/patient' , verifyCookie,patientRouter)
+router.use('/patient',patientRouter)
 router.use('/doctor' , doctorRouter)
 
 export default router

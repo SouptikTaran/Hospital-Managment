@@ -6,5 +6,5 @@ const router = Router()
 router.post('/signup' , Doctor.signup )
 router.post('/login' , Doctor.login )
 router.post('/delete' , Doctor.deleteDoctor )
-
+router.get('/getDoctors',Doctor.getDoctor)
 export default router

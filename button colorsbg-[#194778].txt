@@ -1,0 +1,35 @@
+ <div className='w-full h-[80%] overflow-y-scroll flex items-center flex-col gap-4'>
+              <label htmlFor='question' className='flex flex-col border-2 border-[#7289DA] p-2 text-white w-[90%] rounded-md font-semibold'>
+                   Enter Question
+                  <input id="question" placeholder='Eg:Wap to print sum of two no.s' type='string' className='bg-[#2B2D3C]'/>
+              </label>
+              <label htmlFor='testcasesNo' className='flex flex-col border-2 border-[#7289DA] p-2 text-white w-[90%] rounded-md font-semibold'>
+                  Enter the no. of testcases
+                  <input id="testcasesNo" placeholder='3' type='number' value={testCasesNo} onChange={(e)=>{
+                       const count = parseInt(e.target.value) || 0;
+                       setTestCasesNo(count);
+                       setTestCases(Array.from({length:count},()=>({input:'',output:''})));
+                  }}/>
+              </label>
+              {Array.from({length:testCasesNo}).map((testCase,index)=>(
+                    <label key={index} className='flex flex-col border-2 border-[#7289DA] p-2 text-white w-[90%] rounded-md font-semibold'>
+                          Test Case {index+1} :
+                            <div className='flex justify-evenly'>
+                              <label htmlFor='input' className='flex flex-col '>
+                                  Input:
+                                  <input id="input" placeholder='Input' value={testCases[index]?.input||''} onChange={(e)=>HandleTestCaseInput(e,index,'input')}/>
+                              </label>
+                              <label htmlFor="output" className='flex flex-col'>
+                                Output:
+                                  <input id="output" placeholder='Output' value={testCases[index]?.output||''} onChange={(e)=>HandleTestCaseInput(e,index,'output')}/>
+                              </label>
+                            </div>
+                    </label>
+              ))}
+          
+              
+            </div>
+            {/* <div className='flex w-[85%] justify-between'> */}
+              {/* <button className='flex text-white gap-2  bg-[#3c4161] w-[20%]  justify-center items-center h-10 p-3 rounded-[0.25rem]'>Close</button>
+              <button className='flex text-white gap-2  bg-[#3c4161] w-[20%]  justify-center items-center h-10 p-3 rounded-[0.25rem]'>Add Assignment</button>
+           */}

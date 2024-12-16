@@ -1,6 +1,6 @@
 
 import * as React from 'react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { format, addDays, isBefore, isAfter, startOfDay } from 'date-fns'
 import { CalendarIcon, Clock, User, Mail, Phone, Stethoscope, AlertCircle } from 'lucide-react'
 import { useForm, Controller } from 'react-hook-form'
@@ -46,16 +46,16 @@ import { Alert, AlertDescription, AlertTitle } from "@repo/ui/components/ui/aler
 import { cn } from "@repo/ui/lib/utils"
 
 const appointmentTypes = [
-  { value: 'general', label: 'General Checkup' },
-  { value: 'specialist', label: 'Specialist Consultation' },
-  { value: 'followup', label: 'Follow-up Appointment' },
-  { value: 'pediatric', label: 'Pediatric Care' },
-  { value: 'dental', label: 'Dental Appointment' },
+  { value: 'Cardiology', label: 'Cardiology' },
+  { value: 'Neurology', label: 'Neurology' },
+  { value: 'Orthopedics', label: 'Orthopedics' },
+  { value: 'Pediatrics', label: 'Pediatric Care' },
+  { value: 'Dermatology', label: 'Dermatology' },
+  { value: 'Psychiatry', label: 'Psychiatry' },
 ]
 
 const timeSlots = [
-  '09:00 AM', '09:30 AM', '10:00 AM', '10:30 AM', '11:00 AM', '11:30 AM',
-  '01:00 PM', '01:30 PM', '02:00 PM', '02:30 PM', '03:00 PM', '03:30 PM', '04:00 PM'
+  '09:00 AM', '10:00 AM',  '11:00 AM', '01:00 PM', '02:00 PM',  '03:00 PM',  '04:00 PM'
 ]
 
 const formSchema = z.object({
@@ -63,15 +63,17 @@ const formSchema = z.object({
   email: z.string().email({ message: "Invalid email address." }),
   phone: z.string().regex(/^\d{10}$/, { message: "Phone number must be 10 digits." }),
   appointmentType: z.string({ required_error: "Please select an appointment type." }),
+  doctorId: z.string({required_error:"Please select a doctor"}),
   date: z.date({ required_error: "Please select a date." }),
   timeSlot: z.string({ required_error: "Please select a time slot." }),
   symptoms: z.string().max(500, { message: "Symptoms must not exceed 500 characters." }).optional(),
 })
 
+
 export default function Booking() {
   const [date, setDate] = useState<Date>()
   const [isSubmitting, setIsSubmitting] = useState(false)
-
+  const [doctors,setDoctors]=useState<{doctorName:string;doctorId:string}[]>([]);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -79,20 +81,49 @@ export default function Booking() {
       email: "",
       phone: "",
       appointmentType: undefined,
+      doctorId:"",
       date: undefined,
       timeSlot: undefined,
       symptoms: "",
     },
   })
 
+
+  //fetch all the doctors 
+  const fetchDoctors=async() =>{
+    try {
+      const response=await axios.get('http://localhost:5000/api/doctor/getDoctors',
+        {
+          params:{specialization: form.getValues('appointmentType')}
+        }
+      );
+      console.log("doctors in consolelog:",response.data.doctors);
+      setDoctors(response.data.doctors);
+      // console.log("doctors in setDoctors:",doctors);
+      return response.data.doctors;
+    }catch (error) {
+        console.error("error fetching doctors: ",error);
+    }
+
+  }
+  
+  useEffect(()=>{
+      const fetchData= async ()=>{
+          const doctorsData=await fetchDoctors();
+          setDoctors(doctorsData);
+      }
+      fetchData();
+      // console.log("doctors fetched:",doctors);
+  },[form.getValues('appointmentType')]);
+
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     setIsSubmitting(true)
     // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 2000))
+    // await new Promise(resolve => setTimeout(resolve, 2000))
     setIsSubmitting(false)
-    console.log('Form submitted:', data)
-    const response = await axios.post("http://localhost:5000/api/patient/book-appointment");
-    console.log(response)
+    console.log('Form submitted:', data);
+    const response = await axios.post("http://localhost:5000/api/patient/book-appointment",data);
+    console.log(response?.data)
 
     toast({
       title: "Appointment Booked",
@@ -102,6 +133,7 @@ export default function Booking() {
     setDate(undefined)
   }
 
+  
   return (
     <div className="container mx-auto my-5 p-4">
       <Card className="w-full max-w-4xl mx-auto">
@@ -181,6 +213,35 @@ export default function Booking() {
                               {type.label}
                             </SelectItem>
                           ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="doctorId"
+                  render={({ field }) => (
+                    <FormItem >
+                      <FormLabel>Available doctors</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        
+                        <FormControl className='bg-white'>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select appointment type" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent className='bg-white text-black]'>
+                          {doctors.length>0?(doctors.map((doctor) => (
+                            <SelectItem key={doctor.doctorId} value={doctor.doctorId} className='w-[15rem] py-2 cursor-pointer px-10 '>
+                              {doctor.doctorName}
+                            </SelectItem>
+                          ))):   
+                          (<SelectItem disabled value="none" className='w-[15rem] py-2 cursor-pointer px-10 '>
+                            No Doctors Available
+                          </SelectItem>)}
                         </SelectContent>
                       </Select>
                       <FormMessage />

@@ -118,6 +118,38 @@ export const deleteDoctor: RequestHandler = async (req, res) => {
 }
 
 
+//get all doctors according to their specialization
+export const getDoctor:RequestHandler=async(req,res)=>{
+    const {specialization}=req.query;
+    console.log(specialization)
+    //if specialisation is provided
+    // push the code commit with "Bug: Appointment Doctor fetch"
+    if(specialization){
+        try {
+            const FindDoctors=await Doctor.find({"specialization":specialization});
+            console.log(`doctors in ${specialization}:${FindDoctors}`);
+            res.status(200).json({doctors: FindDoctors.map(doctor=>
+                ({doctorName: doctor.firstName +" "+ doctor.lastName, 
+                doctorId:doctor._id}))})
+        } catch (error) {
+            console.error("error while fetching doctors:",error);
+        }
+    }
+    //if specialization is not provided
+    else{
+        try {
+            const FindAllDoctors=await Doctor.find();
+            console.log(`All doctors:${FindAllDoctors}`);
+            res.status(200).json({doctors: FindAllDoctors.map(doctor=>
+                ({doctorName: doctor.firstName +" "+ doctor.lastName, 
+                doctorId:doctor._id}))})
+        } catch (error) {
+            console.error("error while fetching doctors:",error);
+        }
+    }
+    
+}
+
 // TODO : all appointments 
 // Appointment all 
 
