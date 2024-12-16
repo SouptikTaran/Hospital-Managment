@@ -6,7 +6,7 @@ import { CalendarIcon, Clock, User, Mail, Phone, Stethoscope, AlertCircle } from
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
-
+import axios from 'axios'
 import { Button } from "@repo/ui/components/ui/button"
 import { Calendar } from "@repo/ui/components/ui/calendar"
 import {
@@ -91,11 +91,14 @@ export default function Booking() {
     await new Promise(resolve => setTimeout(resolve, 2000))
     setIsSubmitting(false)
     console.log('Form submitted:', data)
+    const response = await axios.post("http://localhost:5000/api/patient/book-appointment");
+    console.log(response)
+
     toast({
       title: "Appointment Booked",
       description: `Your appointment has been scheduled for ${format(data.date, 'MMMM d, yyyy')} at ${data.timeSlot}.`,
     })
-    form.reset()
+    // form.reset()
     setDate(undefined)
   }
 
