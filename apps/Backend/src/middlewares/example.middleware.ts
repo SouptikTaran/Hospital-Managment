@@ -4,7 +4,7 @@ import { getCookie } from "../functions/cookieFunc";
 
 // Define the expected structure of the decoded JWT payload
 interface TokenPayload {
-  userId: string;
+  id: string;
   // Add other optional fields, such as roles or permissions
   roles?: string[];
 }
@@ -38,6 +38,10 @@ export const verifyCookie = (req: Request, res: Response, next: NextFunction): a
 
     next(); // Proceed to the next middleware or route handler
   } catch (error:any) {
+    if (error.name === "TokenExpiredError") {
+      console.error("Token expired:", error.message);
+      return res.status(401).json({ message: "Unauthorized: Token expired" });
+    }
     console.error("Token verification failed:", error.message);
     return res.status(403).json({ message: "Forbidden: Invalid or expired token" });
   }

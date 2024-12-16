@@ -142,7 +142,7 @@ export const deletePatient: RequestHandler = async (req, res) => {
 // Patient Create Appointment
 export const createAppointment: RequestHandler = async (req, res) => {
     const { name, email , phone ,appointmentType , timeSlot ,doctorId, date } = req.body
-    const patientId = req.user?.userId;
+    const patientId = req.user?.id;
     console.log("req.user : " , req.user) // 
     console.log("patientId : " , patientId);
 

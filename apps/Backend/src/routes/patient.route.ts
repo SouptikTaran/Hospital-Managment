@@ -13,4 +13,3 @@ router.post('/book-appointment', verifyCookie , Patient.createAppointment)
 router.post('/appointments' , Patient.allAppointments)
 export default router   
 
-// okay got it 
