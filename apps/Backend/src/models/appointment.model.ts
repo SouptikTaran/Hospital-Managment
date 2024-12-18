@@ -18,6 +18,10 @@ const appointmentSchema = new mongoose.Schema({
         type: Date,
         required: true
     },
+    symptoms: {
+        type: String,
+        require: false
+    },
     patientId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Patient",

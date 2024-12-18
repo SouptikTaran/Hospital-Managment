@@ -125,7 +125,7 @@ export default function Booking() {
   const   CalStartNendTime=()=>{
       if(!timeSlot){return 0}
      //minutesAndPeriods[0]=00 minutesAndPeriods[1]=AM|PM
-      let StartTime=timeSlot;
+      const StartTime=timeSlot;
       let EndTime=" ";
       console.log("hours:",hours[0])
       console.log("minutes:",minutesAndPeriods[0]);

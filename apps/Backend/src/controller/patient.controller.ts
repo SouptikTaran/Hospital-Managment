@@ -9,6 +9,7 @@ import mongoose from "mongoose";
 import { getCookie } from "../functions/cookieFunc.ts";
 import moment from 'moment';
 import {format, parse, parseISO} from 'date-fns'
+import { start } from "repl";
 // import {ToZonedTime} from 'date-fns-tz'
 const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
 
@@ -141,15 +142,13 @@ export const deletePatient: RequestHandler = async (req, res) => {
 
 // Patient Create Appointment
 export const createAppointment: RequestHandler = async (req, res) => {
-    const { name, email , phone ,appointmentType , timeSlot ,startTime, endTime, doctorId, date } = req.body
+    const { name, email , phone ,appointmentType , symptoms ,startTime, endTime, doctorId, date } = req.body
     const patientId = req.user?.id;
-    console.log("req.user : " , req.user) // 
-    console.log("patientId : " , patientId);
-    console.log("doctorId: ",doctorId);
-    // console.log("time slot:",timeSlot);
-    // console.log("start time:",startTime);
-    // console.log("end time:",endTime);
-    // console.log("Appointment type:",appointmentType);
+    
+
+    // TODO: Optimse the code and remove all the unused variables used in the following
+
+
     console.log("recieved date:",date);
     const formattedDate=format(date,'yyyy-MM-dd');
     console.log("date:",formattedDate);
@@ -169,7 +168,9 @@ export const createAppointment: RequestHandler = async (req, res) => {
         return `${formattedHours}:${minutes}`;
     }
     //converted from 12hrs to 24 hrs format
-    const startTime24=convertTimeto24hrs(startTime);
+    console.log("startTime:" , startTime)
+    const startTime24=convertTimeto24hrs(startTime)
+;
     const endTime24=convertTimeto24hrs(endTime);
     console.log("start time 24:",startTime24);
     console.log("end time 24:",endTime24);
@@ -200,6 +201,7 @@ export const createAppointment: RequestHandler = async (req, res) => {
         }
 
 
+
         // Check for an existing appointment in the requested time slot
         const existingAppointment = await Appointment.findOne({
             doctorId,
@@ -212,10 +214,10 @@ export const createAppointment: RequestHandler = async (req, res) => {
         if (existingAppointment) {
             return res.status(400).json({ error: "Appointment already exists for this patient with this doctor on the selected date" });
         }
-
         // Create the new appointment
         const appointment = await Appointment.create({
             patientId,
+            symptoms,
             doctorId,
             startTime:startDate.toISOString(),
             endTime:endDate.toISOString(),
