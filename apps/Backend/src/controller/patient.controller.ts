@@ -7,9 +7,9 @@ import { Doctor } from "../models/doctor.model.ts";
 import { Appointment } from "../models/appointment.model.ts";
 import mongoose from "mongoose";
 import { getCookie } from "../functions/cookieFunc.ts";
-
-
-
+import moment from 'moment';
+import {format, parse, parseISO} from 'date-fns'
+// import {ToZonedTime} from 'date-fns-tz'
 const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
 
 // Signup Controller
@@ -141,11 +141,50 @@ export const deletePatient: RequestHandler = async (req, res) => {
 
 // Patient Create Appointment
 export const createAppointment: RequestHandler = async (req, res) => {
-    const { name, email , phone ,appointmentType , timeSlot ,doctorId, date } = req.body
+    const { name, email , phone ,appointmentType , timeSlot ,startTime, endTime, doctorId, date } = req.body
     const patientId = req.user?.id;
     console.log("req.user : " , req.user) // 
     console.log("patientId : " , patientId);
-
+    console.log("doctorId: ",doctorId);
+    // console.log("time slot:",timeSlot);
+    // console.log("start time:",startTime);
+    // console.log("end time:",endTime);
+    // console.log("Appointment type:",appointmentType);
+    console.log("recieved date:",date);
+    const formattedDate=format(date,'yyyy-MM-dd');
+    console.log("date:",formattedDate);
+    //to convert the start time and end time into 12 hrs format
+    const convertTimeto24hrs=(timeString:string)=>{
+        const [time,period]=timeString.split(" ");
+        const [hours,minutes]=time.split(":");
+        let hoursValue=parseInt(hours);
+        if(period==="PM"&&hoursValue!==12){
+            hoursValue+=12
+        }
+        else if(hoursValue===12&& period==="AM"){
+            hoursValue=0;
+            
+        }
+        const formattedHours = hoursValue < 10 ? `0${hoursValue}` : `${hoursValue}`;
+        return `${formattedHours}:${minutes}`;
+    }
+    //converted from 12hrs to 24 hrs format
+    const startTime24=convertTimeto24hrs(startTime);
+    const endTime24=convertTimeto24hrs(endTime);
+    console.log("start time 24:",startTime24);
+    console.log("end time 24:",endTime24);
+    //conmbine date with converted time
+    const startDateStr = `${formattedDate}T${startTime24}`; 
+    const endDateStr = `${formattedDate}T${endTime24}`;     
+    console.log("start datestring:",startDateStr);
+    console.log("end datestring:",endDateStr);
+    // parse the full date-time string
+    const startDate = new Date(startDateStr);
+    const endDate = new Date(endDateStr);
+    console.log("start:",startDate);
+    console.log("end:",endDate);
+    console.log("Start date UTC:", startDate.toUTCString());
+    console.log("End date UTC:", endDate.toUTCString());
     try {
         // Validate if the patient exists
         const patient = await Patient.findById(patientId);
@@ -162,35 +201,35 @@ export const createAppointment: RequestHandler = async (req, res) => {
 
 
         // Check for an existing appointment in the requested time slot
-        // const existingAppointment = await Appointment.findOne({
-        //     doctorId,
-        //     $or: [
-        //         { startTime: { $lt: endTime }, endTime: { $gt: startTime } },
-        //         { startTime: { $lt: endTime }, endTime: { $gt: startTime } }
-        //     ]
-        // });
+        const existingAppointment = await Appointment.findOne({
+            doctorId,
+            $or: [
+                { startTime: { $lt: endDate }, endTime: { $gt: startDate } },
+                { startTime: { $lt: endDate }, endTime: { $gt: startDate } }
+            ]
+        });
 
-        // if (existingAppointment) {
-        //     return res.status(400).json({ error: "Appointment already exists for this patient with this doctor on the selected date" });
-        // }
+        if (existingAppointment) {
+            return res.status(400).json({ error: "Appointment already exists for this patient with this doctor on the selected date" });
+        }
 
-        // // Create the new appointment
-        // const appointment = await Appointment.create({
-        //     patientId,
-        //     doctorId,
-        //     startTime,
-        //     endTime,
-        //     date: startTime,
-        // });
+        // Create the new appointment
+        const appointment = await Appointment.create({
+            patientId,
+            doctorId,
+            startTime:startDate.toISOString(),
+            endTime:endDate.toISOString(),
+            date:startDate.toISOString(),
+        });
 
 
         // Push the appointment ID to both doctor and patient's appointment lists
-        // doctor.appointments.push(appointment._id);
-        // patient.appointments.push(appointment._id);
+        doctor.appointments.push(appointment._id);
+        patient.appointments.push(appointment._id);
 
-        // // Save the updated doctor and patient documents
-        // await doctor.save();
-        // await patient.save();
+        // Save the updated doctor and patient documents
+        await doctor.save();
+        await patient.save();
 
         // Respond with the success message and appointment details
         res.status(201).json({
