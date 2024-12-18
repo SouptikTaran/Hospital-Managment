@@ -150,6 +150,7 @@ export const createAppointment: RequestHandler = async (req, res) => {
     // console.log("start time:",startTime);
     // console.log("end time:",endTime);
     // console.log("Appointment type:",appointmentType);
+    console.log("recieved date:",date);
     const formattedDate=format(date,'yyyy-MM-dd');
     console.log("date:",formattedDate);
     //to convert the start time and end time into 12 hrs format

@@ -38,7 +38,7 @@ const MidSec = () => {
                           <p className='text-xs'>2024-03-15 at 10:00 AM</p>
                         </div>
                        
-                        <Button className='bg-[#194778] text-white w-[40%] md:w-[15%] border-gray-100'>Reschedule</Button>
+                        <Button className='bg-[c] text-white w-[40%] md:w-[15%] border-gray-100'>Reschedule</Button>
                       
                     </div>
                     <div className='flex justify-between  items-center px-4 py-2 hover:bg-gray-100 rounded-lg '>

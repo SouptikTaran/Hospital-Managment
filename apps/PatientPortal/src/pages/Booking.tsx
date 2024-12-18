@@ -2,13 +2,15 @@
 import * as React from 'react'
 import { useState, useEffect } from 'react'
 import { format, addDays, isBefore, isAfter, startOfDay } from 'date-fns'
-import { CalendarIcon, Clock, User, Mail, Phone, Stethoscope, AlertCircle } from 'lucide-react'
+import { CalendarIcon, Clock, User, Mail, Phone, Stethoscope, AlertCircle, icons, SyringeIcon } from 'lucide-react'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
 import axios from 'axios'
 import { Button } from "@repo/ui/components/ui/button"
-import { Calendar } from "@repo/ui/components/ui/calendar"
+// import { Calendar } from "@repo/ui/components/ui/calendar"
+import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css';
 import {
   Card,
   CardContent,
@@ -42,16 +44,17 @@ import {
 import { Textarea } from "@repo/ui/components/ui/textarea"
 import { toast } from "@repo/ui/hooks/use-toast"
 import { Alert, AlertDescription, AlertTitle } from "@repo/ui/components/ui/alert"
-
+import { HeartPulse,Brain,Bone,Baby,BrainCircuit,UserRound} from 'lucide-react'
 import { cn } from "@repo/ui/lib/utils"
+import { time } from 'console'
 
 const appointmentTypes = [
-  { value: 'Cardiology', label: 'Cardiology' },
-  { value: 'Neurology', label: 'Neurology' },
-  { value: 'Orthopedics', label: 'Orthopedics' },
-  { value: 'Pediatrics', label: 'Pediatric Care' },
-  { value: 'Dermatology', label: 'Dermatology' },
-  { value: 'Psychiatry', label: 'Psychiatry' },
+  { value: 'Cardiology', label: 'Cardiology' ,icons:<HeartPulse color='#3b82f6' size={18}/>},
+  { value: 'Neurology', label: 'Neurology' ,icons:<BrainCircuit color='#3b82f6' size={18}/>},
+  { value: 'Orthopedics', label: 'Orthopedics' ,icons:<Bone color='#3b82f6' size={18}/>},
+  { value: 'Pediatrics', label: 'Pediatric Care',icons:<Baby color='#3b82f6' size={18}/> },
+  { value: 'Dermatology', label: 'Dermatology',icons:<SyringeIcon color='#3b82f6' size={18}/>},
+  { value: 'Psychiatry', label: 'Psychiatry' ,icons:<Brain color='#3b82f6' size={18}/>},
 ]
 
 const timeSlots = [
@@ -66,6 +69,8 @@ const formSchema = z.object({
   doctorId: z.string({required_error:"Please select a doctor"}),
   date: z.date({ required_error: "Please select a date." }),
   timeSlot: z.string({ required_error: "Please select a time slot." }),
+  startTime: z.string({required_error:"start time needs to be provided"}),
+  endTime:z.string({required_error:"end time needs to be provided"}),
   symptoms: z.string().max(500, { message: "Symptoms must not exceed 500 characters." }).optional(),
 })
 
@@ -73,7 +78,8 @@ const formSchema = z.object({
 export default function Booking() {
   const [date, setDate] = useState<Date>()
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [doctors,setDoctors]=useState<{doctorName:string;doctorId:string}[]>([]);
+  const [doctors,setDoctors]=useState<{doctorName:string;doctorId:string,specialization:string}[]>([]);
+  const [selectedDate,setSelectedDate] = useState(new Date());
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -83,13 +89,16 @@ export default function Booking() {
       appointmentType: undefined,
       doctorId:"",
       date: undefined,
-      timeSlot: undefined,
+      timeSlot: "",
+      startTime:"",
+      endTime:"",
       symptoms: "",
     },
   })
 
 
   //fetch all the doctors 
+
   const fetchDoctors=async() =>{
     try {
       const response=await axios.get('http://localhost:5000/api/doctor/getDoctors',
@@ -106,15 +115,53 @@ export default function Booking() {
     }
 
   }
-  
+
+  //for calculating start and end time
+  const appointmentType=form.watch('appointmentType');
+  const timeSlot=form.watch('timeSlot');
+  const hours:any=timeSlot?.split(':');
+  const minutesAndPeriods:any=hours[1]?.split(" ");
+  console.log(timeSlot); 
+  const   CalStartNendTime=()=>{
+      if(!timeSlot){return 0}
+     //minutesAndPeriods[0]=00 minutesAndPeriods[1]=AM|PM
+      let StartTime=timeSlot;
+      let EndTime=" ";
+      console.log("hours:",hours[0])
+      console.log("minutes:",minutesAndPeriods[0]);
+        let hoursValue=hours?parseInt(hours[0], 10):0;
+        let minutesValue=minutesAndPeriods && minutesAndPeriods[0]?String(minutesAndPeriods[0]).padStart(2,'0'):0;
+        let period=minutesAndPeriods?minutesAndPeriods[1]:"";
+        if(hoursValue===11&&period==="AM"){
+            period="PM"
+        }
+        else if(hoursValue===11&&period==="PM"){
+           period="AM"
+        }
+        hoursValue+=1;
+        EndTime= `${hoursValue}:${minutesValue} ${period}`;
+        console.log("start time:",StartTime);
+        console.log("end time:",EndTime);
+
+
+        form.setValue('startTime',StartTime);
+        form.setValue('endTime',EndTime);
+        form.setValue('timeSlot',timeSlot);
+        // return {"startTime":StartTime,"endTime":EndTime};
+  }
+
+  useEffect(()=>{
+      CalStartNendTime();   
+  },[timeSlots]);
   useEffect(()=>{
       const fetchData= async ()=>{
           const doctorsData=await fetchDoctors();
           setDoctors(doctorsData);
       }
-      fetchData();
+      fetchData();  
       // console.log("doctors fetched:",doctors);
-  },[form.getValues('appointmentType')]);
+      console.log(form.getValues('appointmentType'));
+  },[appointmentType]);
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     setIsSubmitting(true)
@@ -133,24 +180,137 @@ export default function Booking() {
     setDate(undefined)
   }
 
+
+  // for setting calendar value
+  const handleSelectedDate=(date:any)=>{
+      setSelectedDate(date);
+      console.log("selectedDate is: ",selectedDate);
+      form.setValue('date',selectedDate);
+      console.log("form date:",form.getValues('date'));
+  }
   
   return (
-    <div className="container mx-auto my-5 p-4">
-      <Card className="w-full max-w-4xl mx-auto">
-        <CardHeader className='mb-2'>
+    <div className=" mx-auto w-full  my-5 p-4">
+      <Card className="w-full mx-auto border flex flex-col items-center">
+        <CardHeader className='mb-2 w-[87%] border'>
           <CardTitle className="text-2xl font-bold text-primary">Book Your Appointment</CardTitle>
-          <CardDescription>Fill out the form below to schedule your visit to our hospital.</CardDescription>
+          <CardDescription className=''>Fill out the form below to schedule your visit to our hospital.</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className='w-full flex justify-center  '>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <div className="grid gap-4 md:grid-cols-2">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 flex justify-evenly w-[90%] ">
+              {/* for choosing appointments */}
+              <div className='flex flex-col gap-4 w-[55%]'>
+              <FormField
+                  control={form.control}
+                  name="appointmentType"
+                  render={({ field }) => (
+                    <FormItem >
+                      <FormLabel className='font-bold text-lg text-gray-500'>Choose Category</FormLabel>
+                      <div className='mt-2'>
+                     
+                        <div className='bg-white text-black flex border gap-x-4 gap-2 pl-6 p-4 items-center justify-start flex-wrap  rounded-xl'>
+                          {appointmentTypes.map((type) => (
+                            <label key={type.value} className='cursor-pointer'>
+                                 <input type="radio"  name="appointmentType" value={type.value} 
+                                onChange={()=>field.onChange(type.value)}
+                                 className=' py-2 cursor-pointer peer hidden px-10 border rounded-full'/>
+                                 <div className="cursor-pointer rounded-full flex items-center gap-3 border-gray-300 px-4 py-2 text-gray-700 bg-gray-100 font-semibold text-sm peer-checked:border-blue-300 peer-checked:border-[0.2rem] peer-checked:font-bold peer-checked:text-blue-500 ">
+                                    {type.icons}<span>{type.label}</span>
+                                 </div>
+                            </label>
+                            
+                          ))}
+                        </div>
+                      </div>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Available doctors */}
                 <FormField
+                  control={form.control}
+                  name="doctorId"
+                  render={({ field }) => (
+                    <FormItem >
+                      <FormLabel className='text-lg font-bold text-gray-500'>Available doctors</FormLabel>
+                      <div className='mt-2'>
+                        
+                        <div className='bg-white text-black] p-5 h-[11rem] overflow-hidden w-full rounded-xl'>
+                            <div className='overflow-x-scroll scrollbar-thin h-[8rem] w-full grid grid-cols-2 gap-4 '>
+                                {doctors.length>0?(doctors.map((doctor) => (
+                                <label key={doctor.doctorId} className='cursor-pointer'>
+                                    <input type="radio" name='doctorId' value={doctor.doctorId} onChange={()=>field.onChange(doctor.doctorId)} className='w-[15rem] py-2 cursor-pointer px-10 peer hidden'/>
+                                    <div className='cursor-pointer rounded-lg flex items-center gap-3 border-gray-300 px-4 py-2 text-gray-700 bg-gray-100 font-semibold text-sm peer-checked:border-blue-300 peer-checked:border-[0.2rem] peer-checked:font-bold peer-checked:text-blue-500 '>
+                                        <div className=' bg-white rounded-lg'><UserRound color="#3b82f6" className='rounded-full m-4 bg-slate-200 p-1' size={30}/></div>
+                                        <div className='flex flex-col'>
+                                          <span className='text-[0.97rem] font-bold'>{doctor.doctorName}</span>
+                                          <span className='text-sm text-gray-400'>{doctor.specialization}</span>
+                                        </div>
+                                    </div> 
+                                </label>
+                              ))):   
+                              (<div className='w-[15rem] py-2 cursor-pointer px-10 '>
+                                  No Doctors Available
+                              </div>)}
+                            </div>
+                        </div>
+                      </div>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+              <div className="grid gap-4 md:grid-cols-2 border">
+                <FormField
+                  control={form.control}
+                  name="date"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col">
+                       <FormLabel className='text-lg font-bold text-gray-500'>Appointment Date</FormLabel>
+
+                       <div className='bg-white  flex justify-center items-center border rounded-xl overflow-hidden '>
+                        <Calendar onChange={handleSelectedDate} value={selectedDate} className="border-transparent"/>
+                        
+                       </div>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="timeSlot"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className='text-lg font-bold text-gray-500'>Available Time Slots</FormLabel>
+                      <div className='overflow-hidden h-[22rem] bg-white flex justify-center items-center rounded-xl'>
+                        
+                        <div className=' w-full flex flex-wrap justify-evenly gap-3 p-3 px-[1rem] py-2  h-[20rem] overflow-scroll scrollbar-thin'>
+                          {timeSlots.map((slot) => (
+                            <label className=''>
+                              <input type='radio' name='timeSlot' key={slot} value={slot} onChange={()=>field.onChange(slot)} className=' w-[10rem] py-1 peer hidden'/>
+                                <div className='peer-checked:text-blue-500 peer-checked:border-blue-500 border p-4 rounded-md cursor-pointer'>{slot}</div>
+                            </label>   
+                          ))}
+                        </div>
+                      </div>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              
+
+              </div>
+                  {/* the right side */}
+              <div className='flex flex-col gap-5 w-[40%]'>
+              <FormField
                   control={form.control}
                   name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Full Name</FormLabel>
+                      <FormLabel className='text-lg font-bold text-gray-500'>Full Name</FormLabel>
                       <FormControl>
                         <div className="relative">
                           <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -166,7 +326,7 @@ export default function Booking() {
                   name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Email</FormLabel>
+                      <FormLabel className='text-lg font-bold text-gray-500' >Email</FormLabel>
                       <FormControl>
                         <div className="relative">
                           <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -177,14 +337,13 @@ export default function Booking() {
                     </FormItem>
                   )}
                 />
-              </div>
-              <div className="grid gap-4 md:grid-cols-2">
+
                 <FormField
                   control={form.control}
                   name="phone"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Phone Number</FormLabel>
+                      <FormLabel className='text-lg font-bold text-gray-500'>Phone Number</FormLabel>
                       <FormControl>
                         <div className="relative">
                           <Phone className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -196,137 +355,11 @@ export default function Booking() {
                   )}
                 />
                 <FormField
-                  control={form.control}
-                  name="appointmentType"
-                  render={({ field }) => (
-                    <FormItem >
-                      <FormLabel>Appointment Type</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl className='bg-white'>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select appointment type" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent className='bg-white text-black]'>
-                          {appointmentTypes.map((type) => (
-                            <SelectItem key={type.value} value={type.value} className='w-[15rem] py-2 cursor-pointer px-10 '>
-                              {type.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="doctorId"
-                  render={({ field }) => (
-                    <FormItem >
-                      <FormLabel>Available doctors</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        
-                        <FormControl className='bg-white'>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select appointment type" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent className='bg-white text-black]'>
-                          {doctors.length>0?(doctors.map((doctor) => (
-                            <SelectItem key={doctor.doctorId} value={doctor.doctorId} className='w-[15rem] py-2 cursor-pointer px-10 '>
-                              {doctor.doctorName}
-                            </SelectItem>
-                          ))):   
-                          (<SelectItem disabled value="none" className='w-[15rem] py-2 cursor-pointer px-10 '>
-                            No Doctors Available
-                          </SelectItem>)}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              <div className="grid gap-4 md:grid-cols-2">
-                <FormField
-                  control={form.control}
-                  name="date"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-col">
-                      <FormLabel>Appointment Date</FormLabel>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <FormControl className='bg-white flex'>
-                            <Button
-                              variant={"outline"}
-                              className={cn(
-                                "w-full pl-3 text-left font-normal",
-                                !field.value && "text-muted-foreground"
-                              )}
-                            >
-                              {field.value ? (
-                                format(field.value, "PPP")
-                              ) : (
-                                <span>Pick a date</span>
-                              )}
-                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                            </Button>
-                          </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto m-auto bg-white " align="start">
-                          <Calendar
-                            mode="single"
-                            selected={field.value}
-                            onSelect={(date) => {
-                              field.onChange(date)
-                              setDate(date)
-                            }}
-                            disabled={(date) =>
-                              isBefore(date, startOfDay(new Date())) ||
-                              isAfter(date, addDays(new Date(), 30))
-                            }
-                            initialFocus
-                          />
-                        </PopoverContent>
-                      </Popover>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="timeSlot"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel >Available Time Slots</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl className='bg-white'>
-                          <SelectTrigger>
-                            <Clock className="mr-2 h-4 w-4" />
-                            <SelectValue placeholder="Select a time slot" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent className='bg-white w-[6.5rem] px-[1rem]'>
-                          {timeSlots.map((slot) => (
-                            <SelectItem key={slot} value={slot} className='w-[10rem] py-1'>
-                              {slot}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-              <FormField
                 control={form.control}
                 name="symptoms"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Symptoms or Concerns (Optional)</FormLabel>
+                    <FormLabel className='text-lg font-bold text-gray-500'>Symptoms or Concerns (Optional)</FormLabel>
                     <FormControl>
                       <Textarea
                         placeholder="Briefly describe your symptoms or reasons for the appointment"
@@ -341,6 +374,7 @@ export default function Booking() {
                   </FormItem>
                 )}
               />
+
               <Alert>
                 <AlertCircle className="h-4 w-4" />
                 <AlertTitle>Important</AlertTitle>
@@ -348,9 +382,11 @@ export default function Booking() {
                   Please arrive 15 minutes before your scheduled appointment time. If you need to cancel or reschedule, please do so at least 24 hours in advance.
                 </AlertDescription>
               </Alert>
-              <Button type="submit" className="w-full bg-black text-white font-bold" disabled={isSubmitting}>
-                {isSubmitting ? "Booking..." : "Book Appointment"}
+              <Button type="submit" className="w-full flex bg-[#194778] text-white font-bold" disabled={isSubmitting}>
+                {isSubmitting ? <p className='w-[70%] font-bold text-md'>Booking...</p> : <p className='w-[70%] font-bold text-md'>Book Appointment</p>}
+                <div className='text-bold border-l-2 pl-1'>{selectedDate && <><p> {selectedDate.toDateString()} </p><p className='font-light'>{timeSlot}</p></>}</div>
               </Button>
+              </div>  
             </form>
           </Form>
         </CardContent>

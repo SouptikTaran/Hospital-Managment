@@ -129,7 +129,7 @@ export const getDoctor:RequestHandler=async(req,res)=>{
             // console.log(`doctors in ${specialization}:${FindDoctors}`);
             res.status(200).json({doctors: FindDoctors.map(doctor=>
                 ({doctorName: doctor.firstName +" "+ doctor.lastName, 
-                doctorId:doctor._id}))})
+                doctorId:doctor._id,specialization:doctor.specialization}))})
         } catch (error) {
             console.error("error while fetching doctors:",error);
         }
@@ -141,7 +141,7 @@ export const getDoctor:RequestHandler=async(req,res)=>{
             // console.log(`All doctors:${FindAllDoctors}`);
             res.status(200).json({doctors: FindAllDoctors.map(doctor=>
                 ({doctorName: doctor.firstName +" "+ doctor.lastName, 
-                doctorId:doctor._id}))})
+                doctorId:doctor._id,specialization:doctor.specialization}))})
         } catch (error) {
             console.error("error while fetching doctors:",error);
         }
