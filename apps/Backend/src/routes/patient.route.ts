@@ -8,6 +8,8 @@ router.post('/signup' , Patient.signup )
 router.post('/login' , Patient.login )
 router.post('/delete', verifyCookie ,Patient.deletePatient )
 
+//Profile
+
 // Appointment Routes
 router.post('/book-appointment', verifyCookie , Patient.createAppointment)
 router.post('/appointments' , Patient.allAppointments)

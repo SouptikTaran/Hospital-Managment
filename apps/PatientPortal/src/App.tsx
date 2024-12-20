@@ -5,6 +5,7 @@ import { tokenLoader, checkToken , restrict , logoutFunc } from "./lib/Auth";
 import NotFound from "./pages/NotFound";
 import path from "path";
 import Booking from "./pages/Booking";
+import Profile from "./pages/Profile";
 
 
 // export default function App() {
@@ -49,6 +50,11 @@ function App() {
           path: "/booking",
           loader: checkToken,
           element: <Booking />
+        },
+        {
+          path:"/profile",
+          loader: checkToken,
+          element: <Profile/>
         },
         {
           path :"logout",
