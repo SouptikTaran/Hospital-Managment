@@ -1,11 +1,11 @@
 import SideItem from "./ui/SideItem"
 import { Bell, FileText, LayoutDashboard, LogOut, User } from 'lucide-react';
 import { Calendar } from 'lucide-react';
-import { AppDispatch } from "@/redux/appStore";
-import { removeUser } from "@/redux/userSlice";
+import { AppDispatch } from "../redux/appStore";
+import { removeUser } from "../redux/userSlice";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { logoutFunc } from "@/lib/Auth";
+import { logoutFunc } from "../lib/Auth";
 import { Link } from "react-router-dom";
 
 
