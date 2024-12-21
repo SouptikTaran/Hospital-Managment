@@ -19,7 +19,7 @@ app.use(express.json())
 
 //cors
 app.use(cors({
-    origin :'http://localhost:8002',
+    origin :['http://localhost:8002','http://localhost:8001'],
     credentials: true 
 }))
 

@@ -74,11 +74,11 @@ const Login = () => {
     };
 
     return (
-        <div className="flex inset-0 overflow-hidden font-raleway">
+        <div className="flex inset-0 overflow-hidden font-raleway bg-blue-200">
             <div className="absolute opacity-30 md:opacity-100 md:flex md:right-0 bottom-0 h-[100vh] overflow-hidden min-w-screen">
                 <img src={loginImage} className="h-full w-full" alt="Login background"/>
             </div>
-            <div className="absolute w-[30%] left-[37rem] h-[100vh] hidden md:flex z-10 bg-gradient-to-r from-[#e9f0ff] from-65% to-transparent backdrop-blur-xs" />
+            <div className="absolute w-[23%] left-[37rem] h-[100vh] hidden md:flex z-10 bg-gradient-to-r from-[#e9f0ff] from-65% to-transparent backdrop-blur-xs" />
             <div className="flex flex-col absolute z-50 w-[100%]">
                 <div className="w-full h-[3rem] flex items-center">
                     <span className="md:m-[4rem] m-[1.5rem] text-3xl font-bold">EncoHealth</span>
@@ -87,7 +87,7 @@ const Login = () => {
                     <Card className="md:w-[50%] p-4 w-[100%] md:m-[5rem] md:mb-3 m-[1rem] md:mt-10 mt-[5rem] md:bg-transparent md:border-none md:shadow-none shadow-lg shadow-slate-600 bg-white bg-opacity-75 backdrop-blur-sm flex flex-col gap-4">
                         <CardHeader>
                             <CardTitle className="md:text-4xl text-xl font-semibold w-full">
-                                {signup ? 'Create Your New Account' : 'Welcome Back To Your Patient Portal'}
+                                {signup ? 'Create Your New Account' : 'Welcome Back To Your Doctor Portal'}
                             </CardTitle>
                             <CardDescription className="gap-2 flex">
                                 {signup ? 'Already have an account?' : "Don't have an account?"}
@@ -108,7 +108,7 @@ const Login = () => {
                                             Last Name
                                             <input ref={lastNameRef} type="text" className="outline-none bg-transparent" placeholder="Last Name"/>
                                         </label>
-                                    </div>
+                                    </div>  
                                     
                                     <div className="flex gap-5">
                                         <label className="flex items-center gap-2">

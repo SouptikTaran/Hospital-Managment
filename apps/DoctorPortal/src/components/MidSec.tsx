@@ -13,7 +13,7 @@ import { Button} from "@repo/ui/components/ui/button"
 const MidSec = () => {
   return (
     <> 
-        <div className='flex flex-col md:w-[70%] w-full mb-1 gap-5 md:overflow-hidden md:h-[82vh] '>
+        <div className='flex flex-col md:w-[70%] w-full mb-1 gap-5 md:overflow-hidden  md:h-[82vh] '>
           <div className='overflow-scroll flex flex-col md:w-[100%] gap-5 w-full scrollbar-thin'>
             <div className='flex flex-wrap gap-5 md:gap-0 w-[100%]  p-1 justify-between  py-4'>
               <QuickInfoCard icons={<Clock color='#007bff' className=' h-8 w-8 md:h-6' strokeWidth={1.5} />} title='Next Appointment' content='Mar 15,10:00 AM'/>
