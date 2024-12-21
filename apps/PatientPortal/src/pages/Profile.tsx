@@ -20,49 +20,109 @@ import {
   User,
   UserPlus,
   Edit,
+  Cookie,
 } from "lucide-react";
-import { useState } from "react";
-
+import { useEffect, useState } from "react";
+import axios from "axios";
+import Cookies from "js-cookie";
 // Mock data (in a real application, this would come from an API or database)
-const initialPatientData = {
-  id: "PT12345",
-  name: "Jane A. Doe",
-  dateOfBirth: "1988-05-15",
-  gender: "Female",
-  bloodType: "A+",
-  phone: "+1 (555) 123-4567",
-  email: "jane.doe@example.com",
-  address: "123 Main St, Suite 4B, Anytown, USA 12345",
-  occupation: "Software Engineer",
-  emergencyContact: {
-    name: "John Doe",
-    relation: "Spouse",
-    phone: "+1 (555) 987-6543",
-  },
-  insurance: {
-    provider: "HealthGuard Insurance",
-    policyNumber: "HG-987654321",
-    groupNumber: "GRP-001122",
-  },
-  primaryCarePhysician: {
-    name: "Dr. Emily Johnson",
-    phone: "+1 (555) 246-8135",
-    clinic: "Anytown Medical Center",
-  },
-  allergies: ["Penicillin", "Latex"],
-  chronicConditions: ["Hypertension", "Type 2 Diabetes"],
-};
+// const initialPatientData = {
+//   id: "PT12345",
+//   name: "Jane A. Doe",
+//   dateOfBirth: "1988-05-15",
+//   gender: "Female",
+//   bloodType: "A+",
+//   phone: "+1 (555) 123-4567",
+//   email: "jane.doe@example.com",
+//   address: "123 Main St, Suite 4B, Anytown, USA 12345",
+//   occupation: "Software Engineer",
+//   emergencyContact: {
+//     name: "John Doe",
+//     relation: "Spouse",
+//     phone: "+1 (555) 987-6543",
+//   },
+//   insurance: {
+//     provider: "HealthGuard Insurance",
+//     policyNumber: "HG-987654321",
+//     groupNumber: "GRP-001122",
+//   },
+//   primaryCarePhysician: {
+//     name: "Dr. Emily Johnson",
+//     phone: "+1 (555) 246-8135",
+//     clinic: "Anytown Medical Center",
+//   },
+//   allergies: ["Penicillin", "Latex"],
+//   chronicConditions: ["Hypertension", "Type 2 Diabetes"],
+// };
 
 export default function Profile() {
-  const [patientData, setPatientData] = useState(initialPatientData);
+  // const [patientData, setPatientData] = useState(initialPatientData);
   const [isEditing, setIsEditing] = useState(false);
+  //all the fields 
+  const [birthDate,setBirthDate]=useState("");
+  const [FirstName,SetFirstName]=useState("");
+  const [LastName,SetLastName]=useState("")
+  const [phoneNumber,SetPhoneNumber]=useState("");
+  const [occupation,SetOccupation]=useState("");
+  const [alternateContact,SetAlternateContact]=useState("");
+  const [address,SetAddress]=useState("");
+  const [bloodGroup,SetBloodGroup]=useState("");
+  const [email,setEmail]=useState("");
+  const [gender,setGender]=useState("");
+  const [name,setName]=useState("");
+  const [id,setId]=useState("");
+  // console.log("dob",birthDate);
+//to format dob
+  const formatDate = (isoDate:Date) => {
+    const date = new Date(isoDate);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+  //fetching patient's details
+  const FetchPatientProfile=async()=>{
+    try {
+      const token=Cookies.get('token');
+      const response=await axios.get('http://localhost:5000/api/patient/get-profile',{
+      
+        headers:{
+          authorization:'Bearer '+ token
+        }
+      })
+      console.log("response:",response.data);
+      setBirthDate(formatDate(response.data.patientInfo.birthDate));
+      SetPhoneNumber(response.data.patientInfo.phoneNumber);
+      SetOccupation(response.data.patientInfo.occupation);
+      SetAlternateContact(response.data.patientInfo.alternateContact);
+      SetAddress(response.data.patientInfo.address);
+      SetFirstName(response.data.patientInfo.firstName);
+      SetLastName(response.data.patientInfo.lastName);
+      SetBloodGroup(response.data.patientInfo.bloodGroup);
+      setEmail(response.data.patientInfo.email);
+      setGender(response.data.patientInfo.gender);
+      setId(response.data.patientInfo._id);
+      // setPatientData(response.data);
+      setName(response.data.name);
+      // console.log("first name in the function:",FirstName);
+      return response.data;
+    } catch (error) {
+        console.error("error:",error);
+    }
+  }
 
+  useEffect(()=>{
+      const patient=FetchPatientProfile();
+      
+      // console.log("patient Data:",patientData);
+  },[])
   // Function to handle input changes
   const handleChange = (field: string, value: string | number | object) => {
-    setPatientData((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
+    // setPatientData((prev) => ({
+
+    //   ...prev,
+    //   [field]: value,
+    // }));
   };
 
   // Function to toggle editing mode
@@ -70,14 +130,34 @@ export default function Profile() {
     setIsEditing(!isEditing);
   };
 
+
+  const EdittedData:any={
+      phoneNumber,address,occupation,alternateContact,birthDate
+  }
   // Function to handle save
-  const handleSave = () => {
+  const handleSave = async () => {
     // Add logic to push/save the updated patient data
+    try {
+      const token=Cookies.get('token');
+
+      const response=await axios.put('http://localhost:5000/api/patient/edit-profile',
+        EdittedData,{
+          headers:{
+            authorization:'Bearer '+ token
+          }
+        }
+      )
+
+    } catch (error) {
+      
+    }
     // For now, we'll just log it and show a message
-    console.log("Saved Data:", patientData);
+    // console.log("Saved Data:", patientData);
     setIsEditing(false); // Disable editing mode
   };
-
+  // const HandleCancel=()={
+  //   setIsEditing(false);
+  // }
   return (
     <div className="container mx-auto p-6 bg-white shadow-lg rounded-lg">
       <Card className="mb-6">
@@ -85,30 +165,30 @@ export default function Profile() {
           <Avatar className="h-32 w-32 mx-auto mb-4">
             <AvatarImage
               src="https://avatar.iran.liara.run/public?height=128&width=128"
-              alt={patientData.name}
+              alt={name}
             />
             <AvatarFallback>
-              {patientData.name.split(" ").map((n) => n[0]).join("")}
+              {name.split(" ").map((n) => n[0]).join("")}
             </AvatarFallback>
           </Avatar>
           <div>
             <CardTitle className="text-2xl font-semibold">
               <input
                 type="text"
-                value={patientData.name}
-                onChange={(e) => handleChange("name", e.target.value)}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
                 className="border-b border-gray-300 focus:outline-none focus:border-gray-600"
                 disabled={!isEditing}
               />
             </CardTitle>
             <p className="text-sm text-muted-foreground">
-              Patient ID: {patientData.id}
+              Patient ID: {id}
             </p>
             <div className="flex justify-center items-center mt-2 space-x-2">
               <Badge variant="outline">
                 <select
-                  value={patientData.gender}
-                  onChange={(e) => handleChange("gender", e.target.value)}
+                  value={gender}
+                  onChange={(e) => setGender(e.target.value)}
                   className="border border-gray-300 rounded p-1"
                   disabled
                 >
@@ -119,8 +199,8 @@ export default function Profile() {
               <Badge variant="outline">
                 <input
                   type="text"
-                  value={patientData.bloodType}
-                  onChange={(e) => handleChange("bloodType", e.target.value)}
+                  value={bloodGroup}
+                  onChange={(e) => SetBloodGroup(e.target.value)}
                   className="border-b border-gray-300 focus:outline-none focus:border-gray-600"
                   disabled
                 />
@@ -137,8 +217,8 @@ export default function Profile() {
                 value={
                   <input
                     type="date"
-                    value={patientData.dateOfBirth}
-                    onChange={(e) => handleChange("dateOfBirth", e.target.value)}
+                    value={birthDate}
+                    onChange={(e) => setBirthDate( e.target.value)}
                     className="border border-gray-300 rounded p-1"
                     disabled={!isEditing}
                   />
@@ -150,8 +230,8 @@ export default function Profile() {
                 value={
                   <input
                     type="text"
-                    value={patientData.phone}
-                    onChange={(e) => handleChange("phone", e.target.value)}
+                    value={phoneNumber}
+                    onChange={(e) => SetPhoneNumber(e.target.value)}
                     className="border border-gray-300 rounded p-1"
                     disabled={!isEditing}
                   />
@@ -163,8 +243,8 @@ export default function Profile() {
                 value={
                   <input
                     type="email"
-                    value={patientData.email}
-                    onChange={(e) => handleChange("email", e.target.value)}
+                    value={email}
+                    onChange={(e) =>setEmail(e.target.value)}
                     className="border border-gray-300 rounded p-1"
                     disabled
                   />
@@ -176,8 +256,8 @@ export default function Profile() {
                 value={
                   <input
                     type="text"
-                    value={patientData.address}
-                    onChange={(e) => handleChange("address", e.target.value)}
+                    value={address}
+                    onChange={(e) => SetAddress(e.target.value)}
                     className="border border-gray-300 rounded p-1"
                     disabled={!isEditing}
                   />
@@ -189,8 +269,8 @@ export default function Profile() {
                 value={
                   <input
                     type="text"
-                    value={patientData.occupation}
-                    onChange={(e) => handleChange("occupation", e.target.value)}
+                    value={occupation}
+                    onChange={(e) => SetOccupation(e.target.value)}
                     className="border border-gray-300 rounded p-1"
                     disabled={!isEditing}
                   />
@@ -205,7 +285,7 @@ export default function Profile() {
                   <>
                     <input
                       type="text"
-                      value={patientData.primaryCarePhysician.name}
+                      value={name}
                       onChange={(e) =>
                         handleChange("primaryCarePhysician.name", e.target.value)
                       }
@@ -214,7 +294,7 @@ export default function Profile() {
                     />
                     <input
                       type="text"
-                      value={patientData.primaryCarePhysician.clinic}
+                      value="Clinic Name"
                       onChange={(e) =>
                         handleChange("primaryCarePhysician.clinic", e.target.value)
                       }
@@ -231,7 +311,7 @@ export default function Profile() {
                   <>
                     <input
                       type="text"
-                      value={patientData.emergencyContact.name}
+                      value={name}
                       onChange={(e) =>
                         handleChange("emergencyContact.name", e.target.value)
                       }
@@ -240,12 +320,12 @@ export default function Profile() {
                     />
                     <input
                       type="text"
-                      value={patientData.emergencyContact.phone}
+                      value={alternateContact}
                       onChange={(e) =>
-                        handleChange("emergencyContact.phone", e.target.value)
+                        SetAlternateContact(e.target.value)
                       }
                       className="border border-gray-300 rounded p-1"
-                      disabled={!isEditing}
+                      // disabled={!isEditing}
                     />
                   </>
                 }
@@ -266,7 +346,7 @@ export default function Profile() {
             value={
               <input
                 type="text"
-                value={patientData.insurance.provider}
+                value=""
                 onChange={(e) => handleChange("insurance.provider", e.target.value)}
                 className="border border-gray-300 rounded p-1"
                 disabled
@@ -279,7 +359,7 @@ export default function Profile() {
             value={
               <input
                 type="text"
-                value={patientData.insurance.policyNumber}
+                value=""
                 onChange={(e) => handleChange("insurance.policyNumber", e.target.value)}
                 className="border border-gray-300 rounded p-1"
                 disabled
@@ -292,7 +372,7 @@ export default function Profile() {
             value={
               <input
                 type="text"
-                value={patientData.insurance.groupNumber}
+                value=""
                 onChange={(e) => handleChange("insurance.groupNumber", e.target.value)}
                 className="border border-gray-300 rounded p-1"
                 disabled
@@ -302,7 +382,7 @@ export default function Profile() {
         </CardContent>
       </Card>
 
-      <div className="mt-6 flex justify-end">
+      <div className="mt-6 flex justify-end gap-3">
         {isEditing ? (
           <button
             onClick={handleSave}
@@ -318,6 +398,16 @@ export default function Profile() {
             Edit
           </button>
         )}
+          <button
+            onClick={()=>{setIsEditing(false)
+                FetchPatientProfile();
+            }
+            }
+            className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-blue-700"
+
+          >
+            Cancel
+          </button>
       </div>
     </div>
   );

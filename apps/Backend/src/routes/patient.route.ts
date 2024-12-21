@@ -9,7 +9,8 @@ router.post('/login' , Patient.login )
 router.post('/delete', verifyCookie ,Patient.deletePatient )
 
 //Profile
-
+router.get('/get-profile',Patient.FetchPatientProfile);
+router.put('/edit-profile',Patient.EditPatientProfile);
 // Appointment Routes
 router.post('/book-appointment', verifyCookie , Patient.createAppointment)
 router.post('/appointments' , Patient.allAppointments)

@@ -26,6 +26,21 @@ const patientSchema = new mongoose.Schema({
     birthDate: {
         type: Date
     },
+    bloodGroup: {
+        type:String,
+    },
+    phoneNumber:{
+        type:Number
+    },
+    occupation:{
+        type:String
+    },
+    alternateContact:{
+        type:Number
+    },
+    address:{
+        type:String
+    },
     createdAt: {
         type: Date,
         default: Date.now
@@ -34,10 +49,12 @@ const patientSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
+    
     doctorId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Doctor"
     },
+
     appointments: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Appointment"
