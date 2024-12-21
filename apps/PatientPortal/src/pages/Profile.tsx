@@ -173,37 +173,55 @@ export default function Profile() {
           </Avatar>
           <div>
             <CardTitle className="text-2xl font-semibold">
+              {isEditing?
               <input
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="border-b border-gray-300 focus:outline-none focus:border-gray-600"
-                disabled={!isEditing}
-              />
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="border-b border-gray-300 focus:outline-none focus:border-gray-600"
+              disabled={!isEditing}
+            />:
+            <div    
+            className="border-b border-gray-300 focus:outline-none focus:border-gray-600">
+              {name}
+            </div>
+              }
+              
             </CardTitle>
             <p className="text-sm text-muted-foreground">
               Patient ID: {id}
             </p>
             <div className="flex justify-center items-center mt-2 space-x-2">
               <Badge variant="outline">
+                {isEditing?
                 <select
-                  value={gender}
-                  onChange={(e) => setGender(e.target.value)}
-                  className="border border-gray-300 rounded p-1"
-                  disabled
-                >
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>  
-                </select>
+                value={gender}
+                onChange={(e) => setGender(e.target.value)}
+                className="border border-gray-300 rounded p-1"
+                disabled>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>  
+              </select>:
+                <div    
+                  className=" bg-gray-200 px-3 p-1 rounded-full focus:outline-none focus:border-gray-600">
+                  {gender}
+                </div>
+                }
               </Badge>
               <Badge variant="outline">
-                <input
+                {isEditing?
+                  <input
                   type="text"
                   value={bloodGroup}
                   onChange={(e) => SetBloodGroup(e.target.value)}
                   className="border-b border-gray-300 focus:outline-none focus:border-gray-600"
                   disabled
-                />
+                />:
+                <div    
+                className=" bg-gray-200 px-3 p-1 rounded-full focus:outline-none focus:border-gray-600">
+                {bloodGroup}
+              </div>
+                }
               </Badge>
             </div>
           </div>
@@ -215,65 +233,91 @@ export default function Profile() {
                 icon={<Cake className="h-5 w-5" />}
                 label="Date of Birth"
                 value={
-                  <input
-                    type="date"
-                    value={birthDate}
-                    onChange={(e) => setBirthDate( e.target.value)}
-                    className="border border-gray-300 rounded p-1"
-                    disabled={!isEditing}
-                  />
+                  isEditing?<input
+                  type="date"
+                  value={birthDate}
+                  onChange={(e) => setBirthDate( e.target.value)}
+                  className="border border-gray-300 rounded p-1"
+                  disabled={!isEditing}
+                />:
+                <div    
+                className=" px-3 p-1 rounded-full focus:outline-none focus:border-gray-600">
+                {birthDate}
+              </div>
+                  
                 }
               />
               <InfoItem
                 icon={<Phone className="h-5 w-5" />}
                 label="Phone"
                 value={
+                  isEditing?
                   <input
-                    type="text"
-                    value={phoneNumber}
-                    onChange={(e) => SetPhoneNumber(e.target.value)}
-                    className="border border-gray-300 rounded p-1"
-                    disabled={!isEditing}
-                  />
+                  type="text"
+                  value={phoneNumber}
+                  onChange={(e) => SetPhoneNumber(e.target.value)}
+                  className="border border-gray-300 rounded p-1"
+                  disabled={!isEditing}
+                />:
+              <div    
+                className=" px-3 p-1 rounded-full focus:outline-none focus:border-gray-600">
+                {phoneNumber}
+              </div>
                 }
               />
               <InfoItem
                 icon={<Mail className="h-5 w-5" />}
                 label="Email"
                 value={
-                  <input
+                    isEditing?                
+                    <input
                     type="email"
                     value={email}
                     onChange={(e) =>setEmail(e.target.value)}
                     className="border border-gray-300 rounded p-1"
                     disabled
-                  />
+                  />:
+                <div    
+                  className=" px-3 p-1 rounded-full focus:outline-none focus:border-gray-600">
+                  {email}
+                </div>
+
                 }
               />
               <InfoItem
                 icon={<MapPin className="h-5 w-5" />}
                 label="Address"
                 value={
+                  isEditing?
                   <input
                     type="text"
                     value={address}
                     onChange={(e) => SetAddress(e.target.value)}
                     className="border border-gray-300 rounded p-1"
                     disabled={!isEditing}
-                  />
+                  />:
+                  <div    
+                  className=" px-3 p-1 rounded-full focus:outline-none focus:border-gray-600">
+                  {address}
+                </div>
                 }
               />
               <InfoItem
                 icon={<Briefcase className="h-5 w-5" />}
                 label="Occupation"
                 value={
+                  isEditing?
                   <input
                     type="text"
                     value={occupation}
                     onChange={(e) => SetOccupation(e.target.value)}
                     className="border border-gray-300 rounded p-1"
                     disabled={!isEditing}
-                  />
+                  />:
+                  <div    
+                  className=" px-3 p-1 rounded-full focus:outline-none focus:border-gray-600">
+                  {occupation}
+                </div>
                 }
               />
             </div>
@@ -282,10 +326,11 @@ export default function Profile() {
                 icon={<User className="h-5 w-5" />}
                 label="Primary Care Physician"
                 value={
+                  isEditing?
                   <>
                     <input
                       type="text"
-                      value={name}
+                      value="Dr Nicholas"
                       onChange={(e) =>
                         handleChange("primaryCarePhysician.name", e.target.value)
                       }
@@ -294,21 +339,33 @@ export default function Profile() {
                     />
                     <input
                       type="text"
-                      value="Clinic Name"
+                      value="City Medical Center"
                       onChange={(e) =>
                         handleChange("primaryCarePhysician.clinic", e.target.value)
                       }
                       className="border border-gray-300 rounded p-1"
                       disabled
                     />
+                  </>:
+                  <>
+                  <div    
+                      className=" px-3 p-1 font-bold rounded-full focus:outline-none focus:border-gray-600">
+                        Dr. Nicholas
+                  </div>
+                  <div    
+                      className=" px-3 p-1 rounded-full focus:outline-none focus:border-gray-600">
+                          City Medical Center
+                  </div>
                   </>
+
                 }
               />
               <InfoItem
                 icon={<UserPlus className="h-5 w-5" />}
                 label="Emergency Contact"
                 value={
-                  <>
+                    isEditing?
+                    <>
                     <input
                       type="text"
                       value={name}
@@ -327,6 +384,16 @@ export default function Profile() {
                       className="border border-gray-300 rounded p-1"
                       // disabled={!isEditing}
                     />
+                  </>:
+                  <>
+                  <div    
+                      className=" px-3 p-1 font-bold rounded-full focus:outline-none focus:border-gray-600">
+                        {name}
+                  </div>
+                  <div    
+                      className=" px-3 p-1 rounded-full focus:outline-none focus:border-gray-600">
+                          {alternateContact}
+                  </div>
                   </>
                 }
               />
@@ -415,12 +482,12 @@ export default function Profile() {
 
 function InfoItem({ icon, label, value }: { icon: JSX.Element; label: string; value: JSX.Element }) {
   return (
-    <div className="flex items-center space-x-4">
-      <div className="flex-shrink-0">{icon}</div>
-      <div className="flex-grow">
+    <div className="flex flex-col w-full items-start text-gray-600 space-x-4 p-4 ">
+      <div className="flex gap-5">
+        <div className="flex ">{icon}</div>
         <p className="font-medium">{label}</p>
-        <div className="mt-1">{value}</div>
       </div>
+      <div className="mt-1 w-full">{value}</div>
     </div>
   );
 }

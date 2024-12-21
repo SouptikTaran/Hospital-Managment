@@ -9,7 +9,7 @@ const Dashboard = () => {
   return (
     <>
         <div className='flex font-raleway '>
-          <LeftSection/>
+
           <div className='flex flex-col w-full'>
               <Navbar/>
              
