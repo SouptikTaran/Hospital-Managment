@@ -13,7 +13,7 @@ const Dashboard = () => {
           <div className='flex flex-col w-full'>
               <Navbar/>
              
-              <section className='border w-[100%] justify-evenly p-5 flex flex-col md:flex-row'>
+              <section className='border w-[100%] justify-evenly gap-4 p-5 flex flex-col md:flex-row'>
                 <MidSec/>
                 <RightSec/>
               </section>

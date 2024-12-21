@@ -1,6 +1,6 @@
 import React from 'react'
 import QuickInfoCard from './ui/QuickInfoCard'
-import { Clock,Pill,Activity, Calendar  } from 'lucide-react'
+import { Clock,Pill,Activity, Calendar, Users, ArrowBigRight, ArrowDownLeftSquare, ArrowLeftFromLine, ArrowRight, ArrowRightIcon, ArrowRightCircle  } from 'lucide-react'
 import {
   Card,
   CardContent,
@@ -17,7 +17,7 @@ const MidSec = () => {
           <div className='overflow-scroll flex flex-col md:w-[100%] gap-5 w-full scrollbar-thin'>
             <div className='flex flex-wrap gap-5 md:gap-0 w-[100%]  p-1 justify-between  py-4'>
               <QuickInfoCard icons={<Clock color='#007bff' className=' h-8 w-8 md:h-6' strokeWidth={1.5} />} title='Next Appointment' content='Mar 15,10:00 AM'/>
-              <QuickInfoCard icons={<Pill color='#22c55e' className=' h-8 w-8 md:h-6' strokeWidth={1.5}/>} title='Active Medications' content='3'/>
+              <QuickInfoCard icons={<Users color='#22c55e' className=' h-8 w-8 md:h-6' strokeWidth={1.5}/>} title='Total Patients Today' content='3'/>
               <QuickInfoCard icons={<Activity color='#ef4444' className=' h-8 w-8 md:h-6' strokeWidth={1.5}/>} title='Last Blood Pressure' content='121/73'/>
             </div>
            
@@ -38,8 +38,13 @@ const MidSec = () => {
                           <p className='text-xs'>2024-03-15 at 10:00 AM</p>
                         </div>
                        
-                        <Button className='bg-[c] text-white w-[40%] md:w-[15%] border-gray-100'>Reschedule</Button>
-                      
+                        <div className='w-[60%] justify-evenly flex' >
+                          <Button className='bg-[#194778] text-white   border-gray-100'>Completed</Button>
+                          <Button className='bg-[#194778] text-white   border-gray-100'>Reschedule</Button>
+                          <Button className='bg-[#194778] text-white  border-gray-100'>No Show</Button>
+                          <Button className='bg-[#194778] text-white  border-gray-100'>Cancel</Button>
+                          
+                        </div>
                     </div>
                     <div className='flex justify-between  items-center px-4 py-2 hover:bg-gray-100 rounded-lg '>
                         <div className='flex flex-col gap-2 md:gap-0'>
@@ -47,8 +52,13 @@ const MidSec = () => {
                           <p className='text-xs'>2024-03-15 at 10:00 AM</p>
                         </div>
                        
-                        <Button className='bg-[#194778] text-white  w-[40%] md:w-[15%] border-gray-100'>Reschedule</Button>
-                      
+                        <div className='w-[60%] justify-evenly flex' >
+                          <Button className='bg-[#194778] text-white  border-gray-100'>Completed</Button>
+                          <Button className='bg-[#194778] text-white  border-gray-100'>Reschedule</Button>
+                          <Button className='bg-[#194778] text-white  border-gray-100'>No Show</Button>
+                          <Button className='bg-[#194778] text-white  border-gray-100'>Cancel</Button>
+                          {/* <Button className='  border-gray-100'><ArrowRightCircle/></Button> */}
+                        </div>
                     </div>
                 </CardContent>
                 <CardFooter>
@@ -58,7 +68,7 @@ const MidSec = () => {
                 <CardHeader>
                     <CardTitle className="flex gap-5 items-center" >
                         <Activity color="#007bff" strokeWidth={1.5}/>
-                      <span className="text-xl font-semibold">Health Monitoring</span>
+                      <span className="text-xl font-semibold">Patient Incoming History</span>
                     </CardTitle>
             
                 </CardHeader>
