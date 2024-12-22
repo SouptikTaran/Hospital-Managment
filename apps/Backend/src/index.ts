@@ -26,6 +26,10 @@ app.use(cors({
 // import Routes
 import routes from './routes/index.route'
 
+//Fake Data
+import { seedDatabase } from './scripts/seeder';
+
+
 
 //Routes
 app.use('/api', routes)
@@ -33,6 +37,10 @@ app.use('/api', routes)
 //server listening
 const startServer = async () => {
     await connectDB(); 
+
+    if(process.env.NODE_ENV === "docker"){
+        await seedDatabase()
+    }
     app.listen(PORT, () => {
         console.log(`Server is running on http://localhost:${PORT}`);
     });

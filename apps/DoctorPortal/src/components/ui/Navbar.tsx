@@ -4,7 +4,7 @@ const Navbar = () => {
   return (
     <>
         <div className="flex items-center md:gap-[10rem]">
-            <h1 className="py-4 text-3xl font-bold border w-[full] px-10">Welcome,John</h1>
+            <h1 className="py-4 text-3xl font-bold border w-[full] px-10">Welcome, Doctor</h1>
             {/* <div className="md:flex hidden  w-[25%] border p-2 items-center gap-2 border-gray-400 rounded-md">
                 <Search color="gray" size={20} strokeWidth={1.3}/><input className="w-[100%] h-[1.3rem] focus:outline-none bg-[#e9f0ff]" placeholder="Search"/>
             </div> */}

@@ -1,15 +1,15 @@
 import { RequestHandler } from "../types/types";
-import bcrypt from 'bcryptjs'
-import jwt, { JwtPayload } from 'jsonwebtoken'
-import { signupSchema, loginSchema, deletePatientSchema } from "../schemas/patient.schema.ts";
-import { Patient } from "../models/patient.model.ts";
-import { Doctor } from "../models/doctor.model.ts";
-import { Appointment } from "../models/appointment.model.ts";
+import bcrypt from 'bcryptjs';
+import jwt, { JwtPayload } from 'jsonwebtoken';
+import { signupSchema, loginSchema, deletePatientSchema } from "../schemas/patient.schema";
+import { Patient } from "../models/patient.model";
+import { Doctor } from "../models/doctor.model";
+import { Appointment } from "../models/appointment.model";
 import mongoose from "mongoose";
-import { getCookie } from "../functions/cookieFunc.ts";
+import { getCookie } from "../functions/cookieFunc";
 import moment from 'moment';
-import {format, parse, parseISO} from 'date-fns'
-import { start } from "repl";
+import { format, parse, parseISO } from 'date-fns';
+
 // import {ToZonedTime} from 'date-fns-tz'
 const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
 

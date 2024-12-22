@@ -1,5 +1,5 @@
 import { Router } from "express";
-import * as Doctor from "../controller/doctor.controller.ts";
+import * as Doctor from "../controller/doctor.controller";
 const router = Router()
 
 // Authentication

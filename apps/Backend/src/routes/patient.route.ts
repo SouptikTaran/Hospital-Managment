@@ -1,6 +1,6 @@
 import { Router  , Request , Response , NextFunction} from "express";
-import * as Patient from "../controller/patient.controller.ts";
-import { verifyCookie } from "../middlewares/example.middleware.ts";
+import * as Patient from "../controller/patient.controller";
+import { verifyCookie } from "../middlewares/example.middleware";
 const router = Router()
 
 // Auth Routes
