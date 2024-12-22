@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "main": "index.ts",
   "scripts": {
-    "dev": "nodemon"
+    "dev": "nodemon",
+    "build" : "tsc -b",
+    "docker:build": "docker build -t hospital-backend .",
+"docker:start": "docker run -p 5000:5000 --name hospital-backend hospital-backend:latest"
   },
   "author": "",
   "license": "ISC",

@@ -1,14 +1,14 @@
 
-import { RequestHandler } from '../types/types.ts'
+import { RequestHandler } from '../types/types'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import {
     loginSchema,
     signupSchema,
     deleteDoctorSchema,
-} from '../schemas/doctor.schema.ts'
-import { Doctor } from '../models/doctor.model.ts'
-import { Appointment } from '../models/appointment.model.ts'
+} from '../schemas/doctor.schema'
+import { Doctor } from '../models/doctor.model'
+import { Appointment } from '../models/appointment.model'
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret'
 

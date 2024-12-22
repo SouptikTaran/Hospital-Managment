@@ -1,12 +1,12 @@
 import { RequestHandler } from "../types/types";
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
-import { signupSchema, loginSchema, deletePatientSchema } from "../schemas/patient.schema.ts";
-import { Patient } from "../models/patient.model.ts";
-import { Doctor } from "../models/doctor.model.ts";
-import { Appointment } from "../models/appointment.model.ts";
+import { signupSchema, loginSchema, deletePatientSchema } from "../schemas/patient.schema";
+import { Patient } from "../models/patient.model";
+import { Doctor } from "../models/doctor.model";
+import { Appointment } from "../models/appointment.model";
 import mongoose from "mongoose";
-import { getCookie } from "../functions/cookieFunc.ts";
+import { getCookie } from "../functions/cookieFunc";
 import moment from 'moment';
 import {format, parse, parseISO} from 'date-fns'
 import { start } from "repl";
