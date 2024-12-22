@@ -1,4 +1,4 @@
-import {createBrowserRouter, RouterProvider } from "react-router-dom";
+import {createBrowserRouter, RouterProvider,Route,Routes,Router} from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 import { tokenLoader, checkToken , restrict , logoutFunc } from "./lib/Auth";
@@ -6,6 +6,7 @@ import NotFound from "./pages/NotFound";
 import path from "path";
 import Booking from "./pages/Booking";
 import Profile from "./pages/Profile";
+import Layout from "./pages/Layout";
 
 
 // export default function App() {
@@ -39,6 +40,7 @@ function App() {
     {
       loader: tokenLoader,
       id: 'root',
+      element:<Layout/>,
       children: [
 
         {

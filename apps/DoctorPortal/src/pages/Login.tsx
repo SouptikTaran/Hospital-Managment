@@ -52,6 +52,7 @@ const Login = () => {
                 firstName: firstNameRef?.current?.value, 
                 lastName: lastNameRef?.current?.value,
                 gender: gender, // Include gender in payload for signup
+                
             }),
         };
 

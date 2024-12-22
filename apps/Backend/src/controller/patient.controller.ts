@@ -1,6 +1,6 @@
 import { RequestHandler } from "../types/types";
-import bcrypt from 'bcryptjs'
-import jwt from 'jsonwebtoken'
+import bcrypt from 'bcryptjs';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 import { signupSchema, loginSchema, deletePatientSchema } from "../schemas/patient.schema";
 import { Patient } from "../models/patient.model";
 import { Doctor } from "../models/doctor.model";
@@ -8,15 +8,15 @@ import { Appointment } from "../models/appointment.model";
 import mongoose from "mongoose";
 import { getCookie } from "../functions/cookieFunc";
 import moment from 'moment';
-import {format, parse, parseISO} from 'date-fns'
-import { start } from "repl";
+import { format, parse, parseISO } from 'date-fns';
+
 // import {ToZonedTime} from 'date-fns-tz'
 const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
 
 // Signup Controller
 export const signup: RequestHandler = async (req, res) => {
     console.log(req.body)
-    const { firstName, lastName, email, gender, password } = req.body
+    const { firstName, lastName, email, gender, password,bloodGroup,birthDate,phoneNumber,occupation,alternateContact,address} = req.body
     const validation = signupSchema.safeParse(req.body)
     if (!validation.success)
         return res
@@ -39,7 +39,13 @@ export const signup: RequestHandler = async (req, res) => {
             lastName,
             email,
             gender,
-            password: hashedPassword
+            password: hashedPassword,
+            bloodGroup,
+            birthDate,
+            phoneNumber,
+            occupation,
+            alternateContact,
+            address
         })
 
         const token = jwt.sign(
@@ -266,5 +272,67 @@ export const allAppointments: RequestHandler = async (req, res) => {
         });
     } catch (error) {
         return res.json({ error: error });
+    }
+}
+
+
+//Fetch Patient's data
+export const FetchPatientProfile:RequestHandler=async(req,res)=>{
+    const {authorization}=req.headers;
+    const Head=authorization;
+    // console.log("Head:",Head);
+    if (!Head) {
+        return res.status(401).json({ message: "Authorization header is missing" });
+    }
+    const AuthHead:any=Head?.split(' ');
+    const token=AuthHead[1];
+    if (!token) {
+        return res.status(401).json({ message: "token is missing" });
+    }
+    const decode=jwt.verify(token,JWT_SECRET) as JwtPayload;
+    
+    const PatientEmail=decode.email;
+    
+    try {
+        const patientInfo=await Patient.findOne({email:PatientEmail});
+        console.log("Patient Info:",patientInfo);
+        const patient=JSON.stringify(patientInfo);
+        const name=`${patientInfo?.firstName} ${patientInfo?.lastName}`
+        res.status(200).json({patientInfo,name});
+    } catch (error) {
+        console.error("error:",error);
+        res.status(500).json({message:error});
+    }
+}
+
+export const EditPatientProfile:RequestHandler=async(req,res)=>{
+    const {authorization}=req.headers;
+    const {phoneNumber,address,occupation,alternateContact,birthDate}=req.body;
+    const Head=authorization;
+    // console.log("Head:",Head);
+    if (!Head) {
+        return res.status(401).json({ message: "Authorization header is missing" });
+    }
+    const AuthHead:any=Head?.split(' ');
+    const token=AuthHead[1];
+    if (!token) {
+        return res.status(401).json({ message: "token is missing" });
+    }
+    const decode=jwt.verify(token,JWT_SECRET) as JwtPayload;
+    
+    const PatientEmail=decode.email;
+    
+    try {
+        const patientInfo=await Patient.findOne({email:PatientEmail});
+        
+        const PatientId=patientInfo?._id;
+        const updatedPatient=await Patient.findOneAndUpdate({_id:PatientId},{phoneNumber,address,occupation,alternateContact,birthDate},{new:true});
+        if(!updatedPatient){
+            res.status(500).json({"message":"Failed to updated profile"});
+        }
+        res.status(200).json({message:"Profile updated succesfully",patient:updatedPatient});
+    } catch (error) {
+        console.error("error:",error);
+        res.status(500).json({message:error});
     }
 }

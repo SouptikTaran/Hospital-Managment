@@ -23,11 +23,12 @@ const Login = () => {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const [gender, setGender] = useState('');  
-
+    const [BloodGroup,setBloodGroup]=useState('');
+    const [Address,setAddress]=useState('');
     const navigate = useNavigate()
     const dispatch = useDispatch();
     const userInfo = useSelector((state: any) => state.user);
-    console.log(userInfo)
+    console.log("userInfo:",userInfo);
     useEffect(()=>{
         if(userInfo){
             navigate('/')
@@ -38,7 +39,12 @@ const Login = () => {
     const passwordRef = useRef<HTMLInputElement>(null);
     const firstNameRef = useRef<HTMLInputElement>(null);
     const lastNameRef = useRef<HTMLInputElement>(null);
+    const dateOfBirthRef = useRef<HTMLInputElement>(null);
+    const PhoneNumberRef=useRef<HTMLInputElement>(null);
 
+    const OccupationRef=useRef<HTMLInputElement>(null);
+    const AlternateContactRef=useRef<HTMLInputElement>(null);
+   
     const handleAuth = async () => {
         setLoading(true);
         setError('');
@@ -52,6 +58,13 @@ const Login = () => {
                 firstName: firstNameRef?.current?.value, 
                 lastName: lastNameRef?.current?.value,
                 gender: gender, // Include gender in payload for signup
+                bloodGroup:BloodGroup,
+                birthDate:dateOfBirthRef?.current?.value,
+                phoneNumber:PhoneNumberRef?.current?.value,
+                occupation:OccupationRef?.current?.value,
+                alternateContact:AlternateContactRef?.current?.value,
+                address:Address
+
             }),
         };
 
@@ -83,8 +96,8 @@ const Login = () => {
                 <div className="w-full h-[3rem] flex items-center">
                     <span className="md:m-[4rem] m-[1.5rem] text-3xl font-bold">EncoHealth</span>
                 </div>
-                <div className="md:w-[100%] flex md:h-[80vh] items-center">
-                    <Card className="md:w-[50%] p-4 w-[100%] md:m-[5rem] md:mb-3 m-[1rem] md:mt-10 mt-[5rem] md:bg-transparent md:border-none md:shadow-none shadow-lg shadow-slate-600 bg-white bg-opacity-75 backdrop-blur-sm flex flex-col gap-4">
+                <div className="md:w-[100%] flex md:h-[90vh] items-center">
+                    <Card className="md:w-[50%] p-4 w-[100%] md:m-[5rem] md:mb-3 m-[1rem] md:mt-10 mt-[5rem] md:bg-transparent md:border-none md:shadow-none shadow-lg shadow-slate-600 bg-white bg-opacity-75 backdrop-blur-sm flex flex-col gap-4 overflow-hidden">
                         <CardHeader>
                             <CardTitle className="md:text-4xl text-xl font-semibold w-full">
                                 {signup ? 'Create Your New Account' : 'Welcome Back To Your Patient Portal'}
@@ -96,7 +109,7 @@ const Login = () => {
                                 </button>
                             </CardDescription>
                         </CardHeader>
-                        <CardContent className="md:w-[90%] w-[100%] flex flex-col gap-5">
+                        <CardContent className={`md:w-[90%] w-[100%] flex flex-col gap-5 overflow-y-scroll ${signup?'h-[25rem]':''} scrollbar-thin`}>
                             {signup && (
                                 <>
                                     <div className="flex md:flex-row flex-col justify-between gap-5 w-full">
@@ -142,6 +155,47 @@ const Login = () => {
                                             Other
                                         </label>
                                     </div>
+                                    <div className="flex md:flex-row flex-col justify-between gap-5 w-full">
+                                        <label className="flex flex-col md:w-[49%] text-sm md:bg-blue-100 bg-white md:shadow-md shadow-lg shadow-slate-400 bg-opacity-55 rounded-lg backdrop-blur-xl px-4 py-2">
+                                            Blood Group
+                                            <select className="outline-none bg-transparent" value={BloodGroup} onChange={(e)=>{setBloodGroup(e.target.value)}} >
+                                                <option disabled>Select your blood type</option>
+                                                <option>A+</option>
+                                                <option>A-</option>
+                                                <option>B+</option>
+                                                <option>B-</option>
+                                                <option>AB+</option>
+                                                <option>AB-</option>
+                                                <option>O+</option>
+                                                <option>O-</option>
+                                            </select>
+                                        </label>
+                                        <label className="flex flex-col md:w-[49%] text-sm md:bg-blue-100 bg-white md:shadow-md shadow-lg shadow-slate-400 bg-opacity-55 rounded-lg backdrop-blur-xl px-4 py-2">
+                                            Date of Birth
+                                            <input  type="date" ref={dateOfBirthRef} className="outline-none bg-transparent" placeholder="Select your DOB"/>
+                                        </label>
+                                    </div>
+
+                                    <div className="flex md:flex-row flex-col justify-between gap-5 w-full">
+                                        <label className="flex flex-col md:w-[49%] text-sm md:bg-blue-100 bg-white md:shadow-md shadow-lg shadow-slate-400 bg-opacity-55 rounded-lg backdrop-blur-xl px-4 py-2">
+                                            Phone Number
+                                            <input  type="tel" ref={PhoneNumberRef} className="outline-none bg-transparent" placeholder="eg:+91 9876534268"/>
+                                        </label>
+                                        <label className="flex flex-col md:w-[49%] text-sm md:bg-blue-100 bg-white md:shadow-md shadow-lg shadow-slate-400 bg-opacity-55 rounded-lg backdrop-blur-xl px-4 py-2">
+                                            Occupation
+                                            <input type='text' ref={OccupationRef} className="outline-none bg-transparent" placeholder="Occupation"/>
+                                        </label>
+                                    </div>
+                                    <label className="flex flex-col md:w-[100%] text-sm md:bg-blue-100 bg-white md:shadow-md shadow-lg shadow-slate-400 bg-opacity-55 rounded-lg backdrop-blur-xl px-4 py-2">
+                                            Alternate Emergency Contact
+                                            <input type="tel" ref={AlternateContactRef} className="outline-none bg-transparent resize-none" placeholder="9827108308"/>
+                                    </label>
+                                    <label className="flex flex-col md:w-[100%] text-sm md:bg-blue-100 bg-white md:shadow-md shadow-lg shadow-slate-400 bg-opacity-55 rounded-lg backdrop-blur-xl px-4 py-2">
+                                            Your Address
+                                            <input type="text" className="outline-none bg-transparent resize-none" value={Address} onChange={(e)=>{setAddress(e.target.value)}} rows={5} placeholder="Address"/>
+                                    </label>
+                                   
+                                    
                                 </>
                             )}
                             <label className="flex flex-col text-sm md:bg-blue-100 bg-white md:shadow-md shadow-lg shadow-slate-400 bg-opacity-55 rounded-lg backdrop-blur-xl px-4 py-2">

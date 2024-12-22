@@ -190,17 +190,17 @@ export default function Booking() {
   }
   
   return (
-    <div className=" mx-auto w-full  my-5 p-4">
-      <Card className="w-full mx-auto border flex flex-col items-center">
-        <CardHeader className='mb-2 w-[87%] border'>
+    <div className=" w-full  my-5 ">
+      <Card className="w-full flex flex-col items-center ">
+        <CardHeader className='mb-2 w-[95%]'>
           <CardTitle className="text-2xl font-bold text-primary">Book Your Appointment</CardTitle>
           <CardDescription className=''>Fill out the form below to schedule your visit to our hospital.</CardDescription>
         </CardHeader>
-        <CardContent className='w-full flex justify-center  '>
+        <CardContent className='w-full flex justify-evenly'>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 flex justify-evenly w-[90%] ">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 flex justify-evenly w-[100%] ">
               {/* for choosing appointments */}
-              <div className='flex flex-col gap-4 w-[55%]'>
+              <div className='flex flex-col gap-4 w-[55%] '>
               <FormField
                   control={form.control}
                   name="appointmentType"
@@ -209,12 +209,12 @@ export default function Booking() {
                       <FormLabel className='font-bold text-lg text-gray-500'>Choose Category</FormLabel>
                       <div className='mt-2'>
                      
-                        <div className='bg-white text-black flex border gap-x-4 gap-2 pl-6 p-4 items-center justify-start flex-wrap  rounded-xl'>
+                        <div className='bg-white text-black flex  gap-x-4 gap-2 pl-6 p-4 items-center justify-start flex-wrap  rounded-xl'>
                           {appointmentTypes.map((type) => (
                             <label key={type.value} className='cursor-pointer'>
                                  <input type="radio"  name="appointmentType" value={type.value} 
                                 onChange={()=>field.onChange(type.value)}
-                                 className=' py-2 cursor-pointer peer hidden px-10 border rounded-full'/>
+                                 className=' py-2 cursor-pointer peer hidden px-10 rounded-full'/>
                                  <div className="cursor-pointer rounded-full flex items-center gap-3 border-gray-300 px-4 py-2 text-gray-700 bg-gray-100 font-semibold text-sm peer-checked:border-blue-300 peer-checked:border-[0.2rem] peer-checked:font-bold peer-checked:text-blue-500 ">
                                     {type.icons}<span>{type.label}</span>
                                  </div>
@@ -262,7 +262,7 @@ export default function Booking() {
                   )}
                 />
 
-              <div className="grid gap-4 md:grid-cols-2 border">
+              <div className="grid gap-4 md:grid-cols-2">
                 <FormField
                   control={form.control}
                   name="date"
@@ -270,7 +270,7 @@ export default function Booking() {
                     <FormItem className="flex flex-col">
                        <FormLabel className='text-lg font-bold text-gray-500'>Appointment Date</FormLabel>
 
-                       <div className='bg-white  flex justify-center items-center border rounded-xl overflow-hidden '>
+                       <div className='bg-white  flex justify-center items-center rounded-xl overflow-hidden '>
                         <Calendar onChange={handleSelectedDate} value={selectedDate} className="border-transparent"/>
                         
                        </div>

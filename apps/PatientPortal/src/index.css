@@ -3,112 +3,63 @@
 @tailwind utilities;
 
 body {
-  @apply bg-[#e9f0ff]
+  @apply bg-[#e9f0ff];
 }
 
 @layer base {
   :root {
-
     --background: 0 0% 100%;
-
     --foreground: 240 10% 3.9%;
-
     --card: 0 0% 100%;
-
     --card-foreground: 240 10% 3.9%;
-
     --popover: 0 0% 100%;
-
     --popover-foreground: 240 10% 3.9%;
-
     --primary: 240 5.9% 10%;
-
     --primary-foreground: 0 0% 98%;
-
     --secondary: 240 4.8% 95.9%;
-
     --secondary-foreground: 240 5.9% 10%;
-
     --muted: 240 4.8% 95.9%;
-
     --muted-foreground: 240 3.8% 46.1%;
-
     --accent: 240 4.8% 95.9%;
-
     --accent-foreground: 240 5.9% 10%;
-
     --destructive: 0 84.2% 60.2%;
-
     --destructive-foreground: 0 0% 98%;
-
     --border: 240 5.9% 90%;
-
     --input: 240 5.9% 90%;
-
     --ring: 240 10% 3.9%;
-
     --chart-1: 12 76% 61%;
-
     --chart-2: 173 58% 39%;
-
     --chart-3: 197 37% 24%;
-
     --chart-4: 43 74% 66%;
-
     --chart-5: 27 87% 67%;
-
-    --radius: 0.5rem
+    --radius: 0.5rem;
   }
 
   .dark {
-
     --background: 240 10% 3.9%;
-
     --foreground: 0 0% 98%;
-
     --card: 240 10% 3.9%;
-
     --card-foreground: 0 0% 98%;
-
     --popover: 240 10% 3.9%;
-
     --popover-foreground: 0 0% 98%;
-
     --primary: 0 0% 98%;
-
     --primary-foreground: 240 5.9% 10%;
-
     --secondary: 240 3.7% 15.9%;
-
     --secondary-foreground: 0 0% 98%;
-
     --muted: 240 3.7% 15.9%;
-
     --muted-foreground: 240 5% 64.9%;
-
     --accent: 240 3.7% 15.9%;
-
     --accent-foreground: 0 0% 98%;
-
     --destructive: 0 62.8% 30.6%;
-
     --destructive-foreground: 0 0% 98%;
-
     --border: 240 3.7% 15.9%;
-
     --input: 240 3.7% 15.9%;
-
     --ring: 240 4.9% 83.9%;
-
     --chart-1: 220 70% 50%;
-
     --chart-2: 160 60% 45%;
-
     --chart-3: 30 80% 55%;
-
     --chart-4: 280 65% 60%;
-
-    --chart-5: 340 75% 55%
+    --chart-5: 340 75% 55%;
   }
 }
 
@@ -121,7 +72,6 @@ body {
     @apply bg-background text-foreground;
   }
 }
-
 
 @layer utilities {
   .scrollbar::-webkit-scrollbar {
@@ -156,110 +106,96 @@ body {
     display: none;
   }
 
-
   .scrollbar-hide {
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
-}
 
+  .react-calendar {
+    width: 400px;
+    max-width: 100%;
+    background-color: #fff;
+    color: #222;
+    border: none !important;
+    font-family: Arial, Helvetica, sans-serif;
+    line-height: 1.125em;
+    overflow: hidden;
+    padding: 1rem;
+  }
 
+  .react-calendar__navigation button {
+    min-width: 44px;
+    background: none;
+    font-size: 16px;
+    font-weight: 700;
+    margin-top: 8px;
+    color: gray;
+  }
 
+  .react-calendar__navigation button:enabled:hover,
+  .react-calendar__navigation button:enabled:focus {
+    background-color: #f8f8fa;
+  }
 
-.react-calendar {
-  width: 400px;
-  max-width: 100%;
-  background-color: #fff;
-  color: #222;
+  .react-calendar__navigation button[disabled] {
+    background-color: #f0f0f0;
+  }
 
-  border: none !important;
-  font-family: Arial, Helvetica, sans-serif;
-  line-height: 1.125em;
-  overflow: hidden;
-  padding: 1rem;
-}
+  abbr[title] {
+    text-decoration: none;
+  }
 
-.react-calendar__navigation button {
-  min-width: 44px;
-  background: none;
-  font-size: 16px;
-  font-weight: 700;
-  margin-top: 8px;
-  color: gray;
-}
+  .react-calendar__tile:enabled:hover,
+  .react-calendar__tile:enabled:focus {
+    background: #f8f8fa;
+    border-radius: 100%;
+  }
 
-.react-calendar__navigation button:enabled:hover,
-.react-calendar__navigation button:enabled:focus {
-  background-color: #f8f8fa;
-}
+  .react-calendar__tile--now {
+    background: #6f48eb33;
+    border-radius: 100%;
+    font-weight: bold;
+  }
 
-.react-calendar__navigation button[disabled] {
-  background-color: #f0f0f0;
-}
+  .react-calendar__tile:not(.react-calendar__tile--now):hover {
+    background-color: rgb(59, 130, 246, 0.8);
+  }
 
-abbr[title] {
-  text-decoration: none;
-}
+  .react-calendar__tile--now:hover,
+  .react-calendar__tile--now:focus,
+  .react-calendar__tile--now:active {
+    background: #3b82f6;
+    color: white;
+  }
 
-.react-calendar__tile:enabled:hover,
-.react-calendar__tile:enabled:focus {
-  background: #f8f8fa;
-  border-radius: 100%;
-}
+  .react-calendar__tile--hasActive:enabled:hover,
+  .react-calendar__tile--hasActive:enabled:focus {
+    background: #f8f8fa;
+  }
 
-.react-calendar__tile--now {
-  background: #6f48eb33;
-  border-radius: 100%;
-  font-weight: bold;
-}
+  .react-calendar__tile--active {
+    background: #6f48eb;
+    border-radius: 100%;
+    font-weight: bold;
+    color: white;
+  }
 
-.react-calendar__tile:not(.react-calendar__tile--now):hover {
-  background-color: rgb(59, 130, 246, 0.8);
-}
+  .react-calendar__tile--active:enabled:hover,
+  .react-calendar__tile--active:enabled:focus {
+    background: #6f48eb;
+    color: white;
+  }
 
-.react-calendar__tile--now:hover,
-.react-calendar__tile--now:focus,
-.react-calendar__tile--now:active {
-  background: #3b82f6;
-  /* Highlight on hover */
-  color: white;
-  /* Contrast text */
-
-}
-
-.react-calendar__tile--hasActive:enabled:hover,
-.react-calendar__tile--hasActive:enabled:focus {
-  background: #f8f8fa;
-}
-
-.react-calendar__tile--active {
-  background: #6f48eb;
-  border-radius: 100%;
-  font-weight: bold;
-  color: white;
-}
-
-.react-calendar__tile--active:enabled:hover,
-.react-calendar__tile--active:enabled:focus {
-  background: #6f48eb;
-  color: white;
-}
-
-.scrollable-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100vh;
-  width: 30%;
-  /* Set your desired width */
-  overflow-y: auto;
-  /* Enable vertical scrolling */
-  background-color: rgba(255, 255, 255, 0.8);
-  /* Add background if necessary */
-  z-index: 50;
-  /* Ensure it stays above other elements */
-  padding: 1rem;
-  /* Optional padding for spacing */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  /* Optional box-shadow for styling */
+  .scrollable-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 30%;
+    overflow-y: auto;
+    background-color: rgba(255, 255, 255, 0.8);
+    z-index: 50;
+    padding: 1rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
 }
